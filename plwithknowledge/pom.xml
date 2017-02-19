@@ -22,7 +22,7 @@
      <dependency>
     	<groupId>com.github.angerona</groupId>
     	<artifactId>fw</artifactId>
-    	<version>1.0.2</version>
+    	<version>1.0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
     	<groupId>net.sf.tweety.logics</groupId>
@@ -32,7 +32,7 @@
     <dependency>
     	<groupId>com.github.angerona</groupId>
     	<artifactId>gui</artifactId>
-    	<version>1.0.2</version>
+    	<version>1.0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
     	<groupId>net.sf.tweety.logics</groupId>
