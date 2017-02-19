@@ -6,11 +6,11 @@
 
   <name>Angerona (Functional Test)</name>
   <url>http://maven.apache.org</url>
-  
+
   <properties>
   	<tools.home>${basedir}/src/main/tools</tools.home>
   </properties>
-  
+
   <profiles>
     <profile>
       <id>win</id>
@@ -23,7 +23,7 @@
         <permission.script>${basedir}/src/main/permission.bat</permission.script>
       </properties>
     </profile>
-    
+
     <profile>
       <id>unix</id>
       <activation>
@@ -35,10 +35,10 @@
         <permission.script>${basedir}/src/main/permission.sh</permission.script>
       </properties>
     </profile>
-    
-    <!-- 
+
+    <!--
     	MAC profile has to be the last one because on MAC OS the
-     	families mac and unix are set. The values of the latest 
+     	families mac and unix are set. The values of the latest
     	loaded profile are the one used in the rest of the pom.
      -->
     <profile>
@@ -80,7 +80,7 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
-              <outputDirectory>${basedir}/src/main/plugins</outputDirectory>
+              <outputDirectory>${basedir}/target/plugins/</outputDirectory>
               <includeScope>runtime</includeScope>
               <excludeTransitive>true</excludeTransitive>
               <excludeArtifactIds>fw</excludeArtifactIds>
@@ -88,13 +88,13 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.5</version>
         <executions>
-          
+
           <execution>
             <id>Copy Config-Files</id>
             <goals>
@@ -114,7 +114,7 @@
               </resources>
             </configuration>
           </execution>
-          
+
           <execution>
             <id>Copy Example-Files</id>
             <goals>
@@ -131,24 +131,7 @@
               </resources>
             </configuration>
           </execution>
-          
-          <execution>
-            <id>Copy Plugin-Files</id>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <configuration>
-              <outputDirectory>${basedir}/target/plugins/</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/plugins</directory>
-                  <filtering>false</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          
+
           <execution>
             <id>Copy Tool-Files</id>
             <goals>
@@ -165,7 +148,7 @@
               </resources>
             </configuration>
           </execution>
-          
+
           <execution>
             <id>Copy Icon-Files</id>
             <goals>
@@ -181,10 +164,10 @@
                 </resource>
               </resources>
             </configuration>
-          </execution>                             
+          </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -201,7 +184,7 @@
                 <workingDirectory>${basedir}/target</workingDirectory>
             </configuration>
           </execution>
-          
+
           <!-- Used by Netbeans to run the application: -->
           <execution>
               <id>Start Application</id>
@@ -222,7 +205,7 @@
           </execution>
         </executions>
       </plugin>
-      
+
       <plugin>
            <groupId>com.google.code.maven-replacer-plugin</groupId>
            <artifactId>replacer</artifactId>
@@ -232,7 +215,7 @@
                    <phase>prepare-package</phase>
                    <goals>
                        <goal>replace</goal>
-                   </goals>                   
+                   </goals>
                </execution>
            </executions>
            <configuration>
@@ -244,7 +227,7 @@
                <value>${basedir}/target</value>
            </configuration>
        </plugin>
-       
+
        <plugin>
 	        <groupId>org.apache.maven.plugins</groupId>
 	        <artifactId>maven-shade-plugin</artifactId>
@@ -257,11 +240,11 @@
 	            </goals>
 	            <configuration>
 	              <createDependencyReducedPom>false</createDependencyReducedPom>
-	              <!-- 
+	              <!--
 	              		Minimizes the size of the jar, but can lead to problems
 	              		with dynamic code loading
 	               -->
-	              <!--  
+	              <!--
 	              <minimizeJar>true</minimizeJar>
 	              -->
 	              <transformers>
@@ -274,7 +257,7 @@
 	        </executions>
       	  </plugin>
     </plugins>
-    
+
     <pluginManagement>
 	    <plugins>
 	      <plugin>
@@ -294,7 +277,7 @@
 	                  </goals>
 	                </pluginExecutionFilter>
 	                <action>
-	                  <ignore />
+	                  <execute/>
 	                </action>
 	              </pluginExecution>
 	            </pluginExecutions>
@@ -304,7 +287,7 @@
 	    </plugins>
 	</pluginManagement>
   </build>
-  
+
   <dependencies>
     <dependency>
     	<groupId>com.github.angerona</groupId>
