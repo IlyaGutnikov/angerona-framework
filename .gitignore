@@ -4,8 +4,4 @@ target
 
 code-documentation*
 
-*.project
 *.texclipse
-*.classpath
-*.settings
-
