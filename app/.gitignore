@@ -2,6 +2,8 @@ configuration.xml
 plugins
 
 /target
+!/target/examples
+/target/examples
 !/target/examples/strike_committee_meeting2
 
 /USER_HOME_IS_UNDEFINED
