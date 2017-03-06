@@ -65,43 +65,43 @@ import com.github.angerona.fw.listener.FrameworkListener;
 import com.github.angerona.fw.listener.SimulationListener;
 
 /**
- * The main window of the Angerona UI - Extension. It is a Singleton. 
+ * The main window of the Angerona UI - Extension. It is a Singleton.
  * @author Tim Janus
  */
 public class AngeronaWindow extends WindowAdapter
-	implements  
+	implements
 	SimulationListener,
 	FrameworkListener
 	{
 
 	/** the root window of the application */
 	private JFrame mainWindow;
-	
+
 	/** text are used to show error messages */
 	private JTextArea txtErrorMsg;
-	
+
 	/** scroll pane that embeds the text are to show error messages */
 	private JScrollPane errorMsgScroll;
-	
+
 	private DockController control;
-	
+
 	private StackDockStation mainStack;
-	
+
 	private SplitDockStation parentStation;
-	
+
 	private ReportView reportView;
-	
+
 	private List<Dockable> resMap = new LinkedList<>();
-	
+
 	/** a bar allowing the loading, running and initalization of simulations */
 	private SimulationControlBar simLoadBar;
-	
+
 	/** logging facility */
 	private static Logger LOG = LoggerFactory.getLogger(AngeronaWindow.class);
-	
+
 	/** unique instance of the AngeronaWindow (Singleton) */
 	private static AngeronaWindow instance;
-	
+
 	/** @return reference to the unique instance of the AngeronaWindow */
 	public static AngeronaWindow get() {
 		if(instance == null) {
@@ -109,8 +109,8 @@ public class AngeronaWindow extends WindowAdapter
 		}
 		return instance;
 	}
-	
-	/** 
+
+	/**
 	 * Private Ctor: Singleton pattern.
 	 */
 	private AngeronaWindow() {}
@@ -118,17 +118,18 @@ public class AngeronaWindow extends WindowAdapter
 	public void init() throws ParserConfigurationException, SAXException,
 			IOException {
 		LOG.trace("init() AngeronaWindow");
-		
+
 		// setup main window:
 		mainWindow = new JFrame();
 		mainWindow.addWindowListener(this);
 		mainWindow.setTitle("Angerona");
 		mainWindow.setBounds(100, 100, 400, 300);
+		// Вызов windowOpened в другом потоке
 		mainWindow.setVisible(true);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainWindow.setExtendedState(mainWindow.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		mainWindow.setIconImage(readImage("/angerona/fw/gui/icons/font.png"));
-		
+
 		// create the text area and the scroll pane for the error message dialog:
 		txtErrorMsg = new JTextArea();
 		txtErrorMsg.setLineWrap(true);
@@ -136,7 +137,7 @@ public class AngeronaWindow extends WindowAdapter
 		txtErrorMsg.setRows(5);
 		txtErrorMsg.setColumns(40);
 		errorMsgScroll = new JScrollPane(txtErrorMsg);
-		
+
 		// create the menu.
 		createMenu();
 	}
@@ -144,7 +145,7 @@ public class AngeronaWindow extends WindowAdapter
 	private void createMenu() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menuFile = new JMenu("File");
-		
+
 		JMenuItem exit = new JMenuItem("Exit");
 		exit.addActionListener(new ActionListener() {
 			@Override
@@ -154,21 +155,21 @@ public class AngeronaWindow extends WindowAdapter
 		});
 		menuFile.add(exit);
 		menuBar.add(menuFile);
-		
+
 		JMenu simulationMenu = new JMenu("Simulation");
 		SimulationControlMenu view = new SimulationControlMenu(simulationMenu);
 		new SimulationControlPresenter(AngeronaGUIDataStorage.get().getSimulationControl(), view);
 		menuBar.add(simulationMenu);
-		
+
 		JMenu menuWindow = new JMenu("Windows");
 		JMenuItem miCreate = new JMenuItem("Create...");
 		miCreate.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {	
+			public void actionPerformed(ActionEvent arg0) {
 				onCreateWindowClicked();
 			}
 		});
-		
+
 		JMenuItem miReset = new JMenuItem("Reset to default");
 		miReset.addActionListener(new ActionListener() {
 			@Override
@@ -176,7 +177,7 @@ public class AngeronaWindow extends WindowAdapter
 				createDefaultPerspective();
 			}
 		});
-		
+
 		menuWindow.add(miCreate);
 		menuWindow.add(miReset);
 		menuBar.add(menuWindow);
@@ -187,19 +188,19 @@ public class AngeronaWindow extends WindowAdapter
 			SAXException, IOException {
 		PluginInstantiator pi = PluginInstantiator.getInstance();
 		pi.addListener(UIPluginInstatiator.getInstance());
-		
+
 		Angerona angerona = Angerona.getInstance();
 		angerona.addFrameworkListener(this);
 		angerona.addSimulationListener(this);
 
 		angerona.bootstrap();
 		pi.registerPlugin(new DefaultUIPlugin());
-		
+
 		angerona.getProject().addDirectory(new File("config/agents"));
 		angerona.getProject().addDirectory(new File("config/beliefbases"));
 		angerona.getProject().addDirectory(new File("examples"));
 	}
-	
+
 	/**
 	 * @todo move somewhere else
 	 * @param view
@@ -209,7 +210,7 @@ public class AngeronaWindow extends WindowAdapter
 	public Dockable openView(ViewComponent view) {
 		DefaultDockable dd = new DefaultDockable(view.getPanel());
 		view.decorate(dd);
-		
+
 		// easy if the center is a stack already, only adding the Dockable to the stack.
 		if(mainStack.getController() != null) {
 			mainStack.drop(dd);
@@ -218,7 +219,7 @@ public class AngeronaWindow extends WindowAdapter
 			double maxArea = -1;
 			SplitDockProperty curProp = null;
 			Dockable centerDock = null;
-			
+
 			for(int i=0; i<parentStation.getDockableCount(); ++i) {
 				Dockable cur = parentStation.getDockable(i);
 				SplitDockProperty sdp = parentStation.getDockableLocationProperty(cur);
@@ -229,7 +230,7 @@ public class AngeronaWindow extends WindowAdapter
 					centerDock = cur;
 				}
 			}
-			
+
 			// remove the old dockable, drop it to the stack, drop the new dockable to the stack
 			// and then put the stack on the old location of the main dockable.
 			parentStation.removeDockable(centerDock);
@@ -239,12 +240,12 @@ public class AngeronaWindow extends WindowAdapter
 		}
 		return dd;
 	}
-	
+
 	/** helper method: called if the 'Create Window...' menu item is clicked */
 	private void onCreateWindowClicked() {
 		UIPluginInstatiator uip = UIPluginInstatiator.getInstance();
 		Map<String, Class<? extends ViewComponent>> viewMap = uip.getViewMap();
-		String str = (String) JOptionPane.showInputDialog(null, 
+		String str = (String) JOptionPane.showInputDialog(null,
 				"Select a Window to create...",
 				"Create Window",
 				JOptionPane.PLAIN_MESSAGE,
@@ -255,7 +256,7 @@ public class AngeronaWindow extends WindowAdapter
 			try {
 				ViewComponent bc = viewMap.get(str).newInstance();
 				openView(bc);
-				
+
 			} catch (InstantiationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -273,12 +274,12 @@ public class AngeronaWindow extends WindowAdapter
 	public void onError(String errorTitle, String errorMessage) {
 		txtErrorMsg.setText(errorMessage);
 		txtErrorMsg.setCaretPosition(0);
-		JOptionPane.showMessageDialog(mainWindow, errorMsgScroll, 
+		JOptionPane.showMessageDialog(mainWindow, errorMsgScroll,
 				errorTitle, JOptionPane.ERROR_MESSAGE);
 	}
-	
+
 	@Override
-	public void onBootstrapDone() {	
+	public void onBootstrapDone() {
 	}
 
 	/**
@@ -294,16 +295,16 @@ public class AngeronaWindow extends WindowAdapter
 		control = new DockController();
 		control.setRootWindow(mainWindow);
 		control.setTheme(new NoStackTheme(new SmoothTheme()));
-		
+
 		parentStation = new SplitDockStation();
 		parentStation.setExpandOnDoubleclick(false);
 		mainStack = new StackDockStation();
 		mainStack.setTabPlacement(TabPlacement.TOP_OF_DOCKABLE);
-		
+
 		control.add(parentStation);
 		mainWindow.add(parentStation);
 		parentStation.setVisible(true);
-		
+
 		String iconFolder = "/com/github/angerona/fw/gui/icons/";
 		registerIcon("ico_main", iconFolder + "font.png");
 		registerIcon("close", iconFolder + "cross.png");
@@ -315,7 +316,7 @@ public class AngeronaWindow extends WindowAdapter
 		registerIcon("report_attachment", iconFolder + "report_disk.png");
 		registerIcon("page_white", iconFolder + "page_white.png");
 		registerIcon("agent", iconFolder + "user.png");
-		
+
 		// init Angerona
 		try {
 			initAngeronaFramework();
@@ -323,10 +324,10 @@ public class AngeronaWindow extends WindowAdapter
 			onError("Angerona Initialization Failure", e.getMessage());
 			e.printStackTrace();
 		}
-		
-		
+
+
 		reportView = new ReportView();
-		
+
 		createDefaultPerspective();
 	}
 
@@ -343,14 +344,14 @@ public class AngeronaWindow extends WindowAdapter
 	public IconManager getIcons() {
 		return control.getIcons();
 	}
-	
+
 	private BufferedImage readImage(String resUrl) {
 		InputStream is = AngeronaWindow.class.getResourceAsStream(resUrl);
 		if(is == null) {
 			LOG.warn("Cannot found resource '{}' in JAR", resUrl);
 			return null;
 		}
-		
+
 		BufferedImage image = null;
 		try {
 			image = ImageIO.read(is);
@@ -360,24 +361,24 @@ public class AngeronaWindow extends WindowAdapter
 		}
 		return image;
 	}
-	
+
 	private void createDefaultPerspective() {
 		parentStation.removeAllDockables();
-		
+
 		ViewComponent viewComp = ViewComponentFactory.get().createViewComponent(ProjectTreeMVPComponent.class);
 		DefaultDockable dd = new DefaultDockable(viewComp.getPanel());
 		viewComp.decorate(dd);
 		parentStation.drop(dd, new SplitDockProperty(0, 0, 0.25, 0.9));
-		
+
 		dd = new DefaultDockable(reportView);
 		reportView.decorate(dd);
 		parentStation.drop(dd, new SplitDockProperty(0.25, 0, 0.75, 0.9));
-		
+
 		ReportTreeMVP reportTree = ViewComponentFactory.get().createViewComponent(ReportTreeMVP.class);
 		dd = new DefaultDockable(reportTree.getPanel());
 		reportTree.decorate(dd);
 		parentStation.drop(dd, new SplitDockProperty(0.25, 0, 0.75, 0.9));
-		
+
 		viewComp = ViewComponentFactory.get().createViewComponent(SimulationControlBarMVPComponent.class);
 		dd = new DefaultDockable(viewComp.getPanel());
 		/*
@@ -385,21 +386,21 @@ public class AngeronaWindow extends WindowAdapter
 		HierarchyDockActionSource hdas = (HierarchyDockActionSource)dd.getGlobalActionOffers();
 		hdas.unbind();
 		*/
-		parentStation.drop(dd, new SplitDockProperty(0, 0.9, 1, 0.1));		
+		parentStation.drop(dd, new SplitDockProperty(0, 0.9, 1, 0.1));
 	}
-	
+
 	@Override
 	public void simulationStarted(AngeronaEnvironment simulationEnvironment) {
 		SimulationTreeController stc = new SimulationTreeController(new JTree());
 		stc.simulationStarted(simulationEnvironment);
-		
+
 		ResourcenView rv = new ResourcenView(stc);
 		DefaultDockable dd = new DefaultDockable(new JScrollPane(rv));
 		dd.setTitleText("Entities of '" + simulationEnvironment.getName() + "'");
 		dd.setTitleIcon(control.getIcons().get("simulation"));
 		parentStation.drop(dd, SplitDockProperty.WEST);
 		resMap.add(dd);
-		
+
 		//check if the scenario has an interactive agent and open the interactive View if needed
 		for(Agent a : simulationEnvironment.getAgents()){
 			if (a instanceof InteractiveAgent){
@@ -418,7 +419,7 @@ public class AngeronaWindow extends WindowAdapter
 		}
 		resMap.clear();
 	}
-	
+
 	public void registerDockableForCurrentSimulation(Dockable d) {
 		resMap.add(d);
 	}
@@ -440,7 +441,7 @@ public class AngeronaWindow extends WindowAdapter
 	@Override
 	public void actionPerformed(Agent agent, Action act) {
 	}
-	
+
 	public JFrame getMainWindow(){
 		return mainWindow;
 	}
@@ -448,6 +449,6 @@ public class AngeronaWindow extends WindowAdapter
 	@Override
 	public void tickStarting(AngeronaEnvironment simulationEnvironment) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
