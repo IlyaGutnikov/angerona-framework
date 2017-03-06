@@ -1,6 +1,7 @@
 package com.github.angerona.fw.gui;
 
 import interactive.InteractiveAgentNextActionRequester;
+import ru.ilyagutnikov.magisterwork.AdditionalData;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -124,6 +125,8 @@ public class AngeronaWindow extends WindowAdapter
 		mainWindow.addWindowListener(this);
 		mainWindow.setTitle("Angerona");
 		mainWindow.setBounds(100, 100, 400, 300);
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Вызов windowOpened в другом потоке " + getClass().getName());
 		// Вызов windowOpened в другом потоке
 		mainWindow.setVisible(true);
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -186,6 +189,9 @@ public class AngeronaWindow extends WindowAdapter
 
 	private void initAngeronaFramework() throws ParserConfigurationException,
 			SAXException, IOException {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Инициализация фреймворка Ангерона " + getClass().getName());
+
 		PluginInstantiator pi = PluginInstantiator.getInstance();
 		pi.addListener(UIPluginInstatiator.getInstance());
 
@@ -195,6 +201,8 @@ public class AngeronaWindow extends WindowAdapter
 
 		angerona.bootstrap();
 		pi.registerPlugin(new DefaultUIPlugin());
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Подтягивание проектов из папок config " + getClass().getName());
 
 		angerona.getProject().addDirectory(new File("config/agents"));
 		angerona.getProject().addDirectory(new File("config/beliefbases"));

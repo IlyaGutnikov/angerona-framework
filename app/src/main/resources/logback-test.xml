@@ -13,6 +13,13 @@
     </encoder>
   </appender>
 
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Name>DEBUG_MARKER_FILTER</Name>
+        <Marker>DEBUG_MARKER</Marker>
+        <OnMismatch>DENY</OnMismatch>
+    </turboFilter>
+
+
   <root level="info">
     <appender-ref ref="FILE" />
     <appender-ref ref="STDOUT" />
