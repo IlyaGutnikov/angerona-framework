@@ -159,6 +159,7 @@ public class AngeronaEnvironment  {
 			return false;
 		
 		LOG.info("Starting simulation: " + config.getName());
+		
 		this.name = config.getName();
 		this.simDirectory = config.getFile().getParent();
 
