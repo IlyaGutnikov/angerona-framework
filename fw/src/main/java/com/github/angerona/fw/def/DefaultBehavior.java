@@ -16,6 +16,8 @@ import com.github.angerona.fw.EnvironmentBehavior;
 import com.github.angerona.fw.Perception;
 import com.github.angerona.fw.comm.SpeechAct;
 
+import ru.ilyagutnikov.magisterwork.AdditionalData;
+
 /**
  * Behavior implementing the default Angerona environment behavior.
  * runOneTick will wait till isSimulationReady returns true.
@@ -24,22 +26,22 @@ import com.github.angerona.fw.comm.SpeechAct;
 public class DefaultBehavior implements EnvironmentBehavior  {
 
 	private static Logger LOG = LoggerFactory.getLogger(DefaultBehavior.class);
-	
+
 	protected boolean doingTick = false;
-	
+
 	protected boolean angeronaReady = true;
-	
+
 	protected boolean somethingHappens = false;
-	
+
 	/** the actual simulation tick */
 	protected int tick = 0;
-	
-	
+
+
 	@Override
 	public void sendAction(AngeronaEnvironment env, Action act) {
 		// The action send by one agent is the perception of the other one.
 		somethingHappens = true;
-		
+
 		// forward the action if it can be perceived by other agents
 		if(act instanceof Perception) {
 			Perception per = (Perception) act;
@@ -53,7 +55,7 @@ public class DefaultBehavior implements EnvironmentBehavior  {
 		String agentName = percept.getReceiverId();
 		localDelegate(env, percept, agentName);
 	}
-	
+
 	/**
 	 * Helper method: delegates the perception/action to the local agents.
 	 * @param env
@@ -77,8 +79,10 @@ public class DefaultBehavior implements EnvironmentBehavior  {
 
 	@Override
 	public boolean runOneTick(AngeronaEnvironment env) {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Один тик системы в поведении " + this.getClass());
 		doingTick = true;
-		
+
 		while(!isSimulationReady()) {
 			try {
 				Thread.sleep(100);
@@ -86,30 +90,36 @@ public class DefaultBehavior implements EnvironmentBehavior  {
 				e.printStackTrace();
 			}
 		}
-		
+
 		if(!somethingHappens && tick != 0)
 			return false;
-		
+
 		somethingHappens = false;
 		angeronaReady = false;
 		++tick;
 		Angerona.getInstance().onTickStarting(env);
-		
+
 		List<Agent> orderedAlphabetically = new ArrayList<>(env.getAgents());
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Агенты для которых будет выполнен оди тик " + orderedAlphabetically);
+
 		Collections.sort(orderedAlphabetically, new Comparator<Agent>() {
 			@Override
 			public int compare(Agent o1, Agent o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
-		
+
 		for(Agent agent : orderedAlphabetically) {
+
+			LOG.info(AdditionalData.DEBUG_MARKER, "Для агента '{}' будет запущен цикл", agent.getName());
+
 			// cycle internally sends the selected action
 			// to the environment using sendAction() method.
 			agent.cycle();
 		}
 		angeronaReady = true;
-		
+
 		doingTick = false;
 		Angerona.getInstance().onTickDone(env);
 		return true;

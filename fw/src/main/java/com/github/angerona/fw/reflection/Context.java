@@ -10,18 +10,18 @@ import java.util.Map.Entry;
  * @author Tim Janus
  */
 public class Context {
-	
+
 	/** map containing all the objects saved by the key-string name */
 	private Map<String, Object> objects;
-	
+
 	public Context() {
 		objects = new HashMap<String, Object>();
 	}
-	
+
 	public Context(Context other) {
 		this.objects = new HashMap<String, Object>(other.objects);
 	}
-	
+
 	/**
 	 * Gets the object saved with the given name.
 	 * @param name	the name of the object.
@@ -35,7 +35,7 @@ public class Context {
 			Context c = (Context)objects.get(pair[0]);
 			return c != null ? c.get(pair[1]) : null;
 		}
-		
+
 		if(!objects.containsKey(name))
 			return null;
 		return objects.get(name);
@@ -58,7 +58,7 @@ public class Context {
 			objects.put(name, obj);
 		}
 	}
-	
+
 	/**
 	 * Attach the given context under the given name.
 	 * @param name		The name of the parameter in this context representing the new context.
@@ -70,7 +70,7 @@ public class Context {
 			;// TODO: Throw Exception.
 		set(name, context);
 	}
-	
+
 	/**
 	 * Detaches the context with the given name from this context.
 	 * @param name	The name of the context to detach.
@@ -82,19 +82,19 @@ public class Context {
 		objects.remove(name);
 		return true;
 	}
-	
+
 	/**
 	 * Deletes all objects which were registered to this context.
 	 */
 	public void clear() {
 		objects.clear();
 	}
-	
+
 	@Override
 	public String toString() {
 		return toString(new LinkedList<Context>(), 0);
 	}
-	
+
 	/**
 	 * Helper method: helps to generate a recursively string represeentation of the context
 	 * @param visited a collection with Contexts which were already visited (no circles)
@@ -103,11 +103,11 @@ public class Context {
 	 */
 	private String toString(List<Context> visited, int depth) {
 		visited.add(this);
-		
+
 		StringBuffer pre = new StringBuffer();
 		for(int i=0;i<depth;++i)
 			pre.append("-");
-		
+
 		StringBuffer reval = new StringBuffer();
 		for(String str : objects.keySet()) {
 			Object obj = objects.get(str);
@@ -117,13 +117,15 @@ public class Context {
 				reval.append(next.toString(visited, depth+1));
 			}
 		}
-		
+
 		for(Entry<String, Object> entry : objects.entrySet()) {
 			if(!(entry.getValue() instanceof Context)) {
 				reval.append(pre + entry.getKey() + "\n");
 			}
 		}
-		
+
 		return reval.toString();
 	}
+
+	//TODO написать getObjects
 }

@@ -136,6 +136,9 @@ public class AngeronaEnvironment  {
 	 * @return true if at least one agents cylce function was called, false otherwise.
 	 */
 	public boolean runOneTick() {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Проход одного тика системы");
+
 		Long before = System.currentTimeMillis();
 		boolean reval = behavior.runOneTick(this);
 		Long duration = System.currentTimeMillis() - before;
@@ -176,7 +179,7 @@ public class AngeronaEnvironment  {
 
 		if(!registerAgents(config))
 			return false;
-		//TODO: остановился здесь
+
 		if(!createAgents(config))
 			return false;
 
@@ -225,10 +228,14 @@ public class AngeronaEnvironment  {
 	 * 			if an error occurred during the creation.
 	 */
 	private boolean createAgents(SimulationConfiguration config) {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Начало создания агентов");
+
 		for(AgentInstance ai : config.getAgents()) {
 			try {
 				// First instantiate the agent components:
 				Agent agent = getAgentByName(ai.getName());
+				LOG.info(AdditionalData.DEBUG_MARKER, "Создан агент " + agent + " на основе инстанса " + ai.getName());
 				LOG.info("Start the creation of Agent '{}'.", ai.getName());
 				agent.create(ai, config);
 

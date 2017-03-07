@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import net.sf.tweety.logics.fol.syntax.FolFormula;
+import ru.ilyagutnikov.magisterwork.AdditionalData;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,17 +61,17 @@ import com.github.angerona.fw.serialize.SimulationConfiguration;
  * Agent is an Entity in the Angerona Framework and provides its own id, its
  * parentId which is null for an agent and a list of child ids which identify
  * the AgentComponent instances.
- * 
+ *
  * An agent also implements the ActionProcessor interface. This implementation
  * updates the agent's own beliefs and sends the performed action to the
  * Environment.
- * 
+ *
  * Every agent implements the OperatorCaller interface and implements an
  * operator call stack as described in OperatorStack. The agent also implements
  * the Reporter interface to give its called Operator instances the ability to
  * use the Angerona report system. The call stack implementation also updates
  * the used ReportPoster of the Reporter to the currently active Operator.
- * 
+ *
  * @todo handle multiple perceptions
  * @author Tim Janus
  * @author Daniel Dilger
@@ -115,7 +116,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 
 	/** a list of capabilities which describe actions the agent can perform */
 	protected List<String> capabilities = new LinkedList<>();
-	
+
 	protected List<Perception> perceptions = new LinkedList<>();
 
 	/**
@@ -131,7 +132,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	protected Perception lastUpdateBeliefsPercept;
 
 	protected CommandSequence asmlCylce;
-	
+
 	protected AngeronaEnvironment env;
 
 	public OperatorProvider getOperators() {
@@ -154,10 +155,10 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	public void perceive(Perception percept) {
 		perceptions.add(percept);
 	}
-	
+
 	/**
 	 * Sets the belief bases of the agent.
-	 * 
+	 *
 	 * @param world
 	 *            The world knowledge of this agents
 	 * @param views
@@ -190,14 +191,14 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 		}
 		regenContext();
 	}
-	
+
 	public AngeronaEnvironment getEnvironment() {
 		return env;
 	}
 
 	/**
 	 * Creates the belief bases, operators and components of the agent.
-	 * 
+	 *
 	 * @param ai
 	 *            The configuration of the agent instance.
 	 * @param config
@@ -206,11 +207,15 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	 */
 	public void create(AgentInstance ai, SimulationConfiguration config)
 			throws AgentInstantiationException {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Создание и добавление частей агента");
+
 		this.id = Long.valueOf(IdGenerator.generate(this));
 		context = new Context();
 		this.reporter = new AngeronaReporter(this, this);
 
 		capabilities.addAll(ai.getCapabilities());
+		LOG.info(AdditionalData.DEBUG_MARKER, "В агента: " + getName() + " добавлены возможности (capabilities)" + capabilities);
 
 		// load cycle script and link supported operators
 		asmlCylce = ai.getConfig().getCycleScript();
@@ -224,22 +229,33 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 			}
 		}
 
+		LOG.info(AdditionalData.DEBUG_MARKER, "В агента: " + getName() + " добавлены операторы (operators)" + operators);
+
 		createBeliefbases(ai, config);
 		createAgentComponents(ai, config.getFile().getParentFile());
 		parseBeliefbases(ai, config.getFile().getParentFile());
 
 		// add desire component if necessary.
 		Desires desires = getComponent(Desires.class);
+		LOG.info(AdditionalData.DEBUG_MARKER, "Производится создание желаний (desires)");
+
 		if (desires == null && ai.getDesires().size() > 0) {
 			LOG.warn(
 					"No desire-component added to agent '{}' but desires, auto-add the desire component.",
 					getName());
 			desires = new Desires();
+
+			LOG.info(AdditionalData.DEBUG_MARKER, "Желания '{}' добавлены в убеждения", desires.getDesires(), beliefs);
 			beliefs.addComponent(desires);
+
+		} else {
+
+			LOG.info(AdditionalData.DEBUG_MARKER, "Текущие желания '{}'", desires.getDesires());
 		}
 
 		// init the custom components
 		for (AgentComponent ac : beliefs.getComponents()) {
+			LOG.info(AdditionalData.DEBUG_MARKER, "Инициализация дополнительных компонентов '{}'", ac);
 			ac.init(ai.getAdditionalData());
 			for(AgentComponent listener : beliefs.getComponents()) {
 				if(listener != ac) {
@@ -253,7 +269,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	 * Helper method: parses the belief base content for all the belief bases of
 	 * the agent. That means one world belief base and one view belief base for
 	 * every other agent is parsed.
-	 * 
+	 *
 	 * @param ai
 	 * @throws AgentInstantiationException
 	 */
@@ -261,16 +277,20 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 			throws AgentInstantiationException {
 		String errorOutput = null;
 
+		LOG.info(AdditionalData.DEBUG_MARKER, "Производится парсинг beliefBase для мира агентов");
+
 		String workingPath = workingDirectory.getAbsolutePath() + "/";
-		
+
 		try {
 			// parse the content of the world belief base:
 			BaseBeliefbase world = getBeliefs().getWorldKnowledge();
 			File worldBBFile = new File(workingPath + ai.getBeliefbaseName() + "." + world.getFileEnding());
+			LOG.info(AdditionalData.DEBUG_MARKER, "Файл beliefBase для мира агентов: " + worldBBFile.getAbsolutePath());
 			if (worldBBFile.exists()) {
 				world.parse(new BufferedReader(new FileReader(worldBBFile)));
 			} else {
 				LOG.warn("No world belief base file for '{}'.", ai.getName());
+				LOG.info(AdditionalData.DEBUG_MARKER, "Файла beliefBase для мира агентов не существует. Путь к файлу: " + worldBBFile.getAbsolutePath());
 			}
 			// parse the content of every view belief base:
 			Map<String, BaseBeliefbase> views = getBeliefs().getViewKnowledge();
@@ -313,13 +333,16 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	 * config is not given for one agent, then the view on this agent uses the
 	 * same belief base config which is used for the world belief base of the
 	 * viewed agent.
-	 * 
+	 *
 	 * @param ai
 	 * @param config
 	 * @throws AgentInstantiationException
 	 */
 	protected void createBeliefbases(AgentInstance ai,
 			SimulationConfiguration config) throws AgentInstantiationException {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "В агента: " + this.name + " создается beliefBase");
+
 		// local variable used to save the output of exceptions...
 		String errorOutput = null;
 		PluginInstantiator pi = PluginInstantiator.getInstance();
@@ -350,6 +373,10 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 				views.put(otherInstance.getName(), actView);
 			}
 			setBeliefs(world, views);
+			LOG.info(AdditionalData.DEBUG_MARKER, "У агента: " + this.name + " существуют следующие знания о мире " + world);
+			LOG.info(AdditionalData.DEBUG_MARKER, "У агента: " + this.name + " существуют следующие видения " + views);
+
+
 		} catch (InstantiationException|IllegalAccessException|
 				ClassNotFoundException|ParseException e) {
 			errorOutput = "Cannot create agent '" + getName()
@@ -365,7 +392,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	/**
 	 * Helper method: Creates operators and components for the agent using the
 	 * definitions in the given parameter.
-	 * 
+	 *
 	 * @param ai
 	 *            AgentInstance data structure containing information about the
 	 *            operators / components used by the agent.
@@ -373,13 +400,16 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	 */
 	protected void createAgentComponents(AgentInstance ai, File path)
 			throws AgentInstantiationException {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Производится создание компонентов агента");
+
 		AgentConfig ac = ai.getConfig();
 		PluginInstantiator pi = PluginInstantiator.getInstance();
 		try {
 			for (String compName : ac.getComponents()) {
 				AgentComponent comp = pi.createComponent(compName);
 				comp.setParent(id);
-				
+
 				// added simple parsing of Parsable components
 				if(comp instanceof Parsable) {
 					String dir = path.getAbsolutePath() + '/' + ai.getName() + '.' + ((Parsable) comp).getFileExtention();
@@ -391,11 +421,15 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 						e.printStackTrace();
 					}
 				}
-				
+
 				beliefs.addComponent(comp);
 				LOG.info("Add custom Component '{}' to agent '{}'", compName,
 						getName());
+
 			}
+
+			LOG.info(AdditionalData.DEBUG_MARKER, "У агента: " + getName() + " существуют следующие убеждения " + beliefs);
+
 		} catch (InstantiationException e) {
 			throw new AgentInstantiationException(e.getMessage());
 		} catch (IllegalAccessException e) {
@@ -403,7 +437,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 		}
 	}
 
-	
+
 	@SuppressWarnings("unchecked")
 	public <T extends AgentComponent> T getComponent(Class<? extends T> cls) {
 		for (AgentComponent ea : beliefs.getComponents()) {
@@ -446,17 +480,27 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	}
 
 	public boolean cycle() {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Внутри цикла агента '{}'", getName());
+
 		Perception percept = perceptions.isEmpty() ? null : perceptions.get(0);
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Восприятие '{}' агента '{}'", percept, getName());
+
 		perceptions.clear();
 		LOG.info("[" + this.getName() + "] Cylce starts: " + percept);
 
 		regenContext();
 		Context c = getContext();
 		c.set("perception", percept);
-		
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Контекст '{}' агента '{}'", c, getName());
+
+		//TODO остановился здесь
+
 		return asmlCylce.execute(c);
 	}
-	
+
 	public boolean hasPerceptions() {
 		return !perceptions.isEmpty();
 	}
@@ -464,7 +508,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	/**
 	 * Informs all the agent listeners of the agent about the update beliefs
 	 * process using the given perception and the given old beliefs.
-	 * 
+	 *
 	 * @param perception
 	 *            The perception responsible for the update beliefs process
 	 * @param oldBeliefs
@@ -484,7 +528,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	/**
 	 * Updates the beliefs of the agent. This method searches for the correct
 	 * Update operator and calls its process method.
-	 * 
+	 *
 	 * @param perception
 	 *            The perception causing the update.
 	 * @param beliefs
@@ -506,7 +550,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 	/**
 	 * Reasons the given query on the world knowledge using the default
 	 * reasoning operator.
-	 * 
+	 *
 	 * @param query
 	 *            Formula representing the question.
 	 * @return An Angerona Answer containing the result of the reasoning.
