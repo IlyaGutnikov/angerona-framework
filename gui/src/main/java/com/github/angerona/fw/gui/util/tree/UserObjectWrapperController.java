@@ -13,24 +13,24 @@ import com.github.angerona.fw.gui.util.UserObjectWrapper;
  * A general controller for SWING components that contain {@link UserObjectWrapper}.
  * It adds listener code that invokes the user-object's onActivate() method, such
  * that the activation code of the user-object is performed.
- * 
+ *
  * @author Tim Janus
  */
 public class UserObjectWrapperController extends MouseAdapter {
 	private static UserObjectWrapperController controller;
-	
+
 	private UserObjectWrapperController() {}
-	
+
 	public static UserObjectWrapperController get() {
 		if(controller == null) {
 			controller = new UserObjectWrapperController();
 		}
 		return controller;
 	}
-	
+
 	/**
 	 * Helper method: called when user clicks on controls holding user-objects
-	 * 
+	 *
 	 * @param e structure containing data about the (click)mouse-event.
 	 */
 	@Override
@@ -42,9 +42,9 @@ public class UserObjectWrapperController extends MouseAdapter {
 
 	/**
 	 * Checks if a node is under the mouse-location and that is true and
-	 * also a double click occurred then the onActivated method of the 
+	 * also a double click occurred then the onActivated method of the
 	 * user-object in that node is called.
-	 * 
+	 *
 	 * @param e
 	 */
 	private void mouseInTree(MouseEvent e) {

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sf.tweety.logics.fol.syntax.FolFormula;
+import ru.ilyagutnikov.magisterwork.AdditionalData;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,86 +32,89 @@ public class AngeronaEnvironment  {
 
 	/** logging facility */
 	private static Logger LOG = LoggerFactory.getLogger(AngeronaEnvironment.class);
-	
+
 	/** the name of the simulation */
 	private String name;
-		
+
 	/** flag indicating if the environment is correctly initialized */
 	private boolean ready = false;
-	
+
 	/** a map of entity ids to the entity references */
 	private Map<Long, Entity> entities = new HashMap<Long, Entity>();
-	
+
 	/** the behavior of the environment, allows different communication protocols and external simulations */
 	private EnvironmentBehavior behavior;
-	
+
 	/** the root folder of the actual loaded simulation in this environment */
 	private String simDirectory;
-	
+
 	private ObservableMap<String, Agent> agentMap = new ObservableMap<>("agentMap");
-	
+
 	/**
 	 * @return a map of ID --> Entity, the map is not modifiable.
 	 */
 	public Map<Long, Entity> getEntityMap() {
 		return Collections.unmodifiableMap(entities);
 	}
-	
+
 	/**
 	 * Default Ctor: Generates the default-behavior.
 	 */
 	public AngeronaEnvironment() {
 	}
-	
+
 	/**
 	 * @return a set of strings containing all agent names.
 	 */
 	public Set<String> getAgentNames() {
 		return agentMap.keySet();
 	}
-	
+
 	@Override
 	public String toString() {
 		return name;
 	}
-	
+
 	/**
 	 * @return the name of the simulation.
 	 */
 	public String getName() {
 		return name;
 	}
-	
-	/** @return 	a string identifying the root directory of the actual 
-	 * 			 	running simulation or null if no simulation is initialized. 
+
+	/** @return 	a string identifying the root directory of the actual
+	 * 			 	running simulation or null if no simulation is initialized.
 	 */
 	public String getDirectory() {
 		return simDirectory;
 	}
-	
+
 	/**
 	 * Adds the agents with the given name to the environment
-	 * @param agent	
+	 * @param agent
 	 * @return	true if everything was fine, false if the same agent process was already registered.
 	 * @throws AgentIdException Is thrown if the name of the agent process is not unique (two processes have the same name).
 	 */
 	public boolean addAgent(Agent agent) throws AgentIdException {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Добавление агента в окружение " + agent);
+
 		if(agentMap.containsKey(agent.getName())) {
 			if(agentMap.get(agent.getName()) == agent)
 				return false;
-			
+
 			throw new AgentIdException("agent with name: '" + agent.getName() + "' already registered.");
 		}
-		
+
 		agentMap.put(agent.getName(), agent);
 		Angerona.getInstance().onAgentAdded(this, agent);
 		return true;
 	}
-	
+
 	public Collection<Agent> getAgents() {
 		return Collections.unmodifiableCollection(agentMap.values());
 	}
-	
+
 	/**
 	 * Gets the high level agent with the given name
 	 * @param name		unique name of the agent.
@@ -119,14 +123,14 @@ public class AngeronaEnvironment  {
 	public Agent getAgentByName(String name) {
 		return agentMap.get(name);
 	}
-	
+
 	/**
 	 * runs the simulation using the behavior given at construction.
 	 */
 	public boolean run() {
 		return behavior.run(this);
 	}
-	
+
 	/**
 	 * runs one simulation tick. Gives every agent the ability to call its cycle method.
 	 * @return true if at least one agents cylce function was called, false otherwise.
@@ -138,17 +142,17 @@ public class AngeronaEnvironment  {
 		LOG.info("Tick '{}' Duration: '{}' ms", behavior.getTick(), duration);
 		return reval;
 	}
-	
+
 	/** @return	true if the environment is actually performing a tick, false otherwise. */
 	public boolean isDoeingTick() {
 		return behavior.isDoingTick();
 	}
-	
+
 	/** @return true if the simulation is initialized (after the call of initSimulation), false otherwise. */
 	public boolean isReady() {
 		return ready;
 	}
-	
+
 	/**
 	 * Initializes an Angerona simulation, with the given config. The root directory of the simulation is determined from the configuration file.
 	 * @param config	reference to the data-structure containing the configuration of the simulation.
@@ -157,44 +161,45 @@ public class AngeronaEnvironment  {
 	public synchronized boolean initSimulation(SimulationConfiguration config) {
 		if(ready)
 			return false;
-		
+
 		LOG.info("Starting simulation: " + config.getName());
-		
+		LOG.info(AdditionalData.DEBUG_MARKER, "Инициализация симуляции внутри окружения");
+
 		this.name = config.getName();
 		this.simDirectory = config.getFile().getParent();
 
 		// inform listener of start of simulation creation:
 		Angerona.getInstance().onCreateSimulation(this);
-		
+
 		if(!createBehavior(config))
 			return false;
-		
+
 		if(!registerAgents(config))
 			return false;
-		
+		//TODO: остановился здесь
 		if(!createAgents(config))
 			return false;
-				
+
 		Angerona.getInstance().onNewSimulation(this);
-		
+
 		// report the initialized data of the agent to the report system.
 		for(AgentInstance ai : config.getAgents()) {
 			Agent agent = getAgentByName(ai.getName());
 			agent.reportCreation();
-			
+
 			// and initialize the desires:
 			for(FolFormula a : ai.getDesires()) {
 				agent.getComponent(Desires.class).add(new Desire(a));
 			}
-			
+
 			// and initialize the actions:
 			for(SpeechAct a : ai.getActions()) {
 				a.setAgent(getAgentByName(a.getSenderId()));
 				agent.getComponent(ScriptingComponent.class).add(a);
 			}
-			
+
 		}
-		
+
 		// post the initial perceptions defined in the simulation configuration
 		// file to the environment.
 		for(Perception p : config.getPerceptions()) {
@@ -202,16 +207,16 @@ public class AngeronaEnvironment  {
 				this.sendAction((Action)p);
 			}
 		}
-		
+
 		Angerona.getInstance().onTickDone(this);
-		
+
 		return ready = true;
 	}
 
 	/**
 	 * Create the agents defined in the simulation configuration. That means it
 	 * instantiates the different agent components and registers those as entitys
-	 * to the entity-system. 
+	 * to the entity-system.
 	 * @remark 	The method assumes that all the agent instances in the config are
 	 * 			already registered. That means the java objects exists in the
 	 * 			environment, although they are not fully initalized yet.
@@ -223,10 +228,10 @@ public class AngeronaEnvironment  {
 		for(AgentInstance ai : config.getAgents()) {
 			try {
 				// First instantiate the agent components:
-				Agent agent = getAgentByName(ai.getName());		
+				Agent agent = getAgentByName(ai.getName());
 				LOG.info("Start the creation of Agent '{}'.", ai.getName());
 				agent.create(ai, config);
-				
+
 				// Second: Register the different agent components to the entity system:
 				Beliefs b = agent.getBeliefs();
 				BaseBeliefbase world = b.getWorldKnowledge();
@@ -235,18 +240,18 @@ public class AngeronaEnvironment  {
 				for(BaseBeliefbase actView : b.getViewKnowledge().values()) {
 					entities.put(actView.getGUID(), actView);
 				}
-				
+
 				for(AgentComponent comp : agent.getBeliefs().getComponents()) {
 					entities.put(comp.getGUID(), comp);
 				}
-				
+
 				LOG.info("Agent '{}' successfully created and registered.", agent.getName());
 			} catch (AgentInstantiationException e) {
-				errorDelegation("Cannot init simulation, something went wrong during agent instatiation: " + 
+				errorDelegation("Cannot init simulation, something went wrong during agent instatiation: " +
 						e.getMessage());
 				return false;
 			}
-		} 
+		}
 		return true;
 	}
 
@@ -255,12 +260,18 @@ public class AngeronaEnvironment  {
 	 * objects to the environment. The agents are not fully initalized after the method
 	 * returned successfully.
 	 * @param config
-	 * @return	true if the registration process is successful or false if an error occurred 
+	 * @return	true if the registration process is successful or false if an error occurred
 	 * 			during initialization.
 	 */
 	private boolean registerAgents(SimulationConfiguration config) {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Регистрация агентов");
+
 		try {
 			for(AgentInstance ai : config.getAgents()) {
+
+				LOG.info(AdditionalData.DEBUG_MARKER, "Текущий агент в регистрации: " + ai);
+
 				if(ai.getType() != null && ai.getType().equals("InteractiveAgent")){
 					addAgent(new InteractiveAgent(ai.getName(), this));
 				}else{
@@ -275,8 +286,8 @@ public class AngeronaEnvironment  {
 		return true;
 	}
 
-	/** 
-	 * Helper method: cleans the simulation up and delegates the error message to Delegates an error message to 
+	/**
+	 * Helper method: cleans the simulation up and delegates the error message to Delegates an error message to
 	 * two sources: The logging output and all interested Angerona Error Listeners.
 	 * @param errorOutput	String containing the error message.
 	 */
@@ -293,11 +304,16 @@ public class AngeronaEnvironment  {
 	 * @return				true if the creation was successful, false otherwise.
 	 */
 	private boolean createBehavior(SimulationConfiguration config) {
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Создание поведения (Behavior)");
+
 		if(config.getBehaviorCls() != null) {
+			LOG.info(AdditionalData.DEBUG_MARKER, "Имя поведения (получено из конфига) " + config.getBehaviorCls());
 			String error = null;
 			try {
 				behavior = PluginInstantiator.getInstance().createEnvironmentBehavior(
 						config.getBehaviorCls());
+				LOG.info(AdditionalData.DEBUG_MARKER, "Создано поведение: " + behavior);
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 				error = e.getMessage();
@@ -305,7 +321,7 @@ public class AngeronaEnvironment  {
 				e.printStackTrace();
 				error = e.getMessage();
 			}
-			
+
 			if(error != null) {
 				Angerona.getInstance().onError("Simulation initialization", error);
 				LOG.error(error);
@@ -319,19 +335,19 @@ public class AngeronaEnvironment  {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * deletes all agents from the environment and removes the information about the last simulation.
 	 */
 	public synchronized void cleanupEnvironment() {
 		if(ready == false)
 			return;
-		
+
 		agentMap.clear();
 		ready = false;
 		Angerona.getInstance().onSimulationDestroyed(this);
 	}
-	
+
 	public void sendAction(Action action) {
 		behavior.sendAction(this, (Action)action);
 	}

@@ -14,8 +14,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.angerona.fw.gui.controller.TreeControllerAdapter;
 import com.github.angerona.fw.gui.util.CollectionMonitor;
 import com.github.angerona.fw.gui.util.UserObjectWrapper;
+
+import ru.ilyagutnikov.magisterwork.AdditionalData;
 
 /**
  * A tree collection monitor uses the UserObjectWrapper and ControllerListener to fire
@@ -23,34 +29,41 @@ import com.github.angerona.fw.gui.util.UserObjectWrapper;
  * the tree got activated or if the user input invoked a remove command using
  * DELETE key of the keyboard etc. It also returns the list of selected nodes as
  * user objects which are saved in the UserObjectWrapper.
- * 
+ *
  * @author Tim Janus
  */
 public class TreeCollectionMonitor extends CollectionMonitor<JTree> {
-	
+
+	private static Logger LOG = LoggerFactory.getLogger(TreeCollectionMonitor.class);
+
 	/** the mouse listener registered to the tree monitored by this instance. */
 	private MouseListener mouseListener;
-	
+
 	/** the key listener registered to the tree monitored by this instance. */
 	private KeyListener keyListener;
-	
+
 	/**
 	 * Helper method: called when user clicks on the tree, it checks
 	 * if the a node is hit and if this node has a UserObjectWrapper
-	 * as userObject and invokes the onActivated() method on the 
+	 * as userObject and invokes the onActivated() method on the
 	 * UserObjectWrapper implementation.
 	 * @param e structure containing data about the (click)mouse-event.
 	 */
 	protected void onMouseEvent(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		
+
 		TreePath path = component.getPathForLocation(x,y);
 		if(path != null && SwingUtilities.isLeftMouseButton(e)) {
+
+       	 LOG.info(AdditionalData.DEBUG_MARKER, "Произведен двойной клик");
+
 			if(e.getClickCount() == 2) {
 				DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)path.getLastPathComponent();
 				if(dmtn != null && dmtn.getUserObject() instanceof UserObjectWrapper) {
 					UserObjectWrapper uo = (UserObjectWrapper)dmtn.getUserObject();
+	            	LOG.info(AdditionalData.DEBUG_MARKER, "Объект на котром был произведен двойной клик " + uo + " его класс " + uo.getClass());
+
 					uo.onActivated();
 				}
 			}
@@ -58,7 +71,7 @@ public class TreeCollectionMonitor extends CollectionMonitor<JTree> {
 	}
 	/**
 	 * Helper method: called when the user press a key when the tree has the focus.
-	 * It fires a remove event if the DELETE key is pressed or an activation event if 
+	 * It fires a remove event if the DELETE key is pressed or an activation event if
 	 * the enter key is pressed.
 	 * @param e data structure containing information about the key event.
 	 */
@@ -84,8 +97,8 @@ public class TreeCollectionMonitor extends CollectionMonitor<JTree> {
 			}
 		};
 		component.addMouseListener(mouseListener);
-		
-		
+
+
 		keyListener = new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
