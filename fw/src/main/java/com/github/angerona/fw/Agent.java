@@ -222,6 +222,9 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 		for (OperationSetConfig osc : ai.getConfig().getOperations()) {
 			try{
 				operators.addOperationSet(osc);
+
+				LOG.info(AdditionalData.DEBUG_MARKER, "В агента '{}' добавлены операторы '{}'", getName(), osc.getClass().getSimpleName());
+
 			} catch (Exception e) {
 				throw new AgentInstantiationException(
 						"Cannot create operation-set of type '"
@@ -237,7 +240,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 
 		// add desire component if necessary.
 		Desires desires = getComponent(Desires.class);
-		LOG.info(AdditionalData.DEBUG_MARKER, "Производится создание желаний (desires)");
+		LOG.info(AdditionalData.DEBUG_MARKER, "Производится создание желаний (desires) " + desires);
 
 		if (desires == null && ai.getDesires().size() > 0) {
 			LOG.warn(
@@ -245,7 +248,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 					getName());
 			desires = new Desires();
 
-			LOG.info(AdditionalData.DEBUG_MARKER, "Желания '{}' добавлены в убеждения", desires.getDesires(), beliefs);
+			LOG.info(AdditionalData.DEBUG_MARKER, "Желания '{}' добавлены в убеждения '{}'", desires.getDesires(), beliefs);
 			beliefs.addComponent(desires);
 
 		} else {
@@ -255,7 +258,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 
 		// init the custom components
 		for (AgentComponent ac : beliefs.getComponents()) {
-			LOG.info(AdditionalData.DEBUG_MARKER, "Инициализация дополнительных компонентов '{}'", ac);
+			LOG.info(AdditionalData.DEBUG_MARKER, "Инициализация дополнительных компонентов '{}'", ac.getClass().getName());
 			ac.init(ai.getAdditionalData());
 			for(AgentComponent listener : beliefs.getComponents()) {
 				if(listener != ac) {
@@ -494,7 +497,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 		Context c = getContext();
 		c.set("perception", percept);
 
-		LOG.info(AdditionalData.DEBUG_MARKER, "Контекст '{}' агента '{}'", c, getName());
+		LOG.info(AdditionalData.DEBUG_MARKER, "Контекст '{}' агента '{}'", c.getContextObjects(false), getName());
 
 		//TODO остановился здесь
 

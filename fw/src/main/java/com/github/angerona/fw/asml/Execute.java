@@ -21,13 +21,16 @@ public class Execute extends ASMLCommand {
 	/** the script value representing the action as a plan element which the agent shall perform */
 	@Attribute(name="action", required=true)
 	Value action;
-	
+
 	/**
 	 * Checks if the scope is at agent level. If this is not the case an error is
 	 * thrown. Otherwise the plan element is executed.
 	 */
 	@Override
 	protected void executeInternal() throws InvokeException {
+
+		super.executeInternal();
+
 		// Test scope:
 		Agent ag = null;
 		try {
@@ -36,15 +39,18 @@ public class Execute extends ASMLCommand {
 			throw InvokeException.scopeError("execute is called in the wrong scope: " +
 					"Agent scope needed - inner Error: " + e.getMessage(), getContext());
 		}
-		
+
 		// receive the action in the plan element and execute it.
 		PlanElement element = (PlanElement)action.getValue();
 		if(element != null) {
 			element.prepare(ag, ag.getBeliefs());
+
+			super.logInformation("Выполняется элемент плана "+ element +"  внутри команды " + this.getClass().getSimpleName());
+
 			element.run();
 		}
 	}
-	
+
 	/**
 	 * Sets the context the ASML execute command and its value which
 	 * represents the action which shall be executed.

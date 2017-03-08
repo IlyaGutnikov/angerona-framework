@@ -137,6 +137,7 @@ public class AngeronaEnvironment  {
 	 */
 	public boolean runOneTick() {
 
+		LOG.info(AdditionalData.DEBUG_MARKER, "==============================================================");
 		LOG.info(AdditionalData.DEBUG_MARKER, "Проход одного тика системы");
 
 		Long before = System.currentTimeMillis();
@@ -185,13 +186,20 @@ public class AngeronaEnvironment  {
 
 		Angerona.getInstance().onNewSimulation(this);
 
+		//TODO ковырять здесь
+
 		// report the initialized data of the agent to the report system.
 		for(AgentInstance ai : config.getAgents()) {
 			Agent agent = getAgentByName(ai.getName());
 			agent.reportCreation();
 
+			LOG.info(AdditionalData.DEBUG_MARKER, "Был создан агент '{}'", agent.getName());
+
 			// and initialize the desires:
 			for(FolFormula a : ai.getDesires()) {
+
+				LOG.info(AdditionalData.DEBUG_MARKER, "Для агента '{}' было создано желание на основе формулы '{}'", agent.getName(), a);
+
 				agent.getComponent(Desires.class).add(new Desire(a));
 			}
 
@@ -199,8 +207,9 @@ public class AngeronaEnvironment  {
 			for(SpeechAct a : ai.getActions()) {
 				a.setAgent(getAgentByName(a.getSenderId()));
 				agent.getComponent(ScriptingComponent.class).add(a);
-			}
 
+				LOG.info(AdditionalData.DEBUG_MARKER, "Для агента '{}' был создан речевой акт '{}'", agent.getName(), a);
+			}
 		}
 
 		// post the initial perceptions defined in the simulation configuration
@@ -208,6 +217,8 @@ public class AngeronaEnvironment  {
 		for(Perception p : config.getPerceptions()) {
 			if(p instanceof Action) {
 				this.sendAction((Action)p);
+
+				LOG.info(AdditionalData.DEBUG_MARKER, "Была послана команда '{}'", p);
 			}
 		}
 

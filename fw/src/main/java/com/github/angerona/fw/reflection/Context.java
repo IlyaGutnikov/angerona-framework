@@ -1,5 +1,6 @@
 package com.github.angerona.fw.reflection;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -128,4 +129,26 @@ public class Context {
 	}
 
 	//TODO написать getObjects
+
+	public String getContextObjects(boolean emptyToo) {
+
+		List<String> returnList = new ArrayList<String>();
+		for (Map.Entry<String, Object> entry : objects.entrySet()) {
+
+			if (emptyToo) {
+
+				returnList.add("Key: " + entry.getKey() + ", object: " + entry.getValue().toString() + "\n");
+
+			} else {
+
+				if (!(entry.getValue() == null)) {
+
+					returnList.add("Key: " + entry.getKey() + ", object: " + entry.getValue().toString() + "\n");
+				}
+			}
+		}
+
+
+		return returnList.toString();
+	}
 }

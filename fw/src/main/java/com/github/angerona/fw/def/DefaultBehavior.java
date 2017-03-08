@@ -112,7 +112,8 @@ public class DefaultBehavior implements EnvironmentBehavior  {
 
 		for(Agent agent : orderedAlphabetically) {
 
-			LOG.info(AdditionalData.DEBUG_MARKER, "Для агента '{}' будет запущен цикл", agent.getName());
+			LOG.info(AdditionalData.DEBUG_MARKER, "+++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+			LOG.info(AdditionalData.DEBUG_MARKER, "Для агента '{}' будет запущен цикл внутри поведения '{}'", agent.getName(), this.getClass().getName());
 
 			// cycle internally sends the selected action
 			// to the environment using sendAction() method.

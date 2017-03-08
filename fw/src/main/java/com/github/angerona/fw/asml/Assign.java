@@ -12,7 +12,7 @@ import com.github.angerona.fw.reflection.Value;
 /**
  * Implements an assignment command for ASML. It assigns the given value to the
  * given name which acts as identifier in the context.
- * 
+ *
  * @author Tim Janus
  */
 @Root(name = "assign")
@@ -48,6 +48,9 @@ public class Assign extends ASMLCommand {
 
 	@Override
 	protected void executeInternal() throws InvokeException {
+
+		super.executeInternal();
+
 		setParameter(name, value.getValue());
 		LOG.trace("XMLAssign: Set '{}' to '{}'", name, value);
 	}
