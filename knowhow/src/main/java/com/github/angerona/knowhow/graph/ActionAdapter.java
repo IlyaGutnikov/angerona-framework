@@ -195,6 +195,7 @@ public class ActionAdapter extends Action {
 		Parameter recvP = parameters.get(0);
 		Parameter questionP = parameters.get(1);
 
+		//!!!!
 		Query query = new Query(agent, mapAgent(recvP), mapFormula(questionP));
 		LOG.info("Created Action: '" + query.toString() + "'");
 		return query;

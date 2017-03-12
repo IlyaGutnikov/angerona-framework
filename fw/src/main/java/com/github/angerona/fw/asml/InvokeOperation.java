@@ -109,6 +109,7 @@ public class InvokeOperation extends ASMLCommand {
 		// call operation and save result:
 		Object out = ocw.process(gop);
 		// если спустится вглубь processб то можно дойти до выполнения querry
+		//!!!!
 		super.logInformation("Производится выполнение параметра " + gop.getClass().getSimpleName() + "в OperatorCallWrapper " + ocw.getClass().getSimpleName());
 
 		if(out != null && output != null) {
