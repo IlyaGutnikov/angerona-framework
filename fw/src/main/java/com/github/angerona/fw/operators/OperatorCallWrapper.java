@@ -4,10 +4,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.angerona.fw.PlanElement;
 import com.github.angerona.fw.SettingsStorage;
 import com.github.angerona.fw.operators.parameter.GenericOperatorParameter;
 import com.github.angerona.fw.operators.parameter.OperatorParameter;
 import com.github.angerona.fw.util.Pair;
+
+import ru.ilyagutnikov.magisterwork.AdditionalData;
 
 /**
  * Wraps an Operator and saves the settings on the caller side.
@@ -15,12 +21,13 @@ import com.github.angerona.fw.util.Pair;
  *
  * @param <T>	The type of the wrapped Operator
  */
-public class OperatorCallWrapper 
+public class OperatorCallWrapper
 	implements BaseOperator, SettingsStorage {
 	private BaseOperator operator;
-	
+
 	private Map<String, String> settings = new HashMap<>();
-	
+	private static Logger LOG = LoggerFactory.getLogger(PlanElement.class);
+
 	/**
 	 * Ctor: Generates the wrapper around the given operator object
 	 * @param operator	The wrapped operator
@@ -30,11 +37,11 @@ public class OperatorCallWrapper
 			throw new IllegalArgumentException();
 		this.operator = operator;
 	}
-	
+
 	public BaseOperator getImplementation() {
 		return operator;
 	}
-	
+
 	/**
 	 * @return An unmodifiable map of settings for the operator.
 	 */
@@ -42,12 +49,12 @@ public class OperatorCallWrapper
 	public Map<String, String> getSettings() {
 		return Collections.unmodifiableMap(settings);
 	}
-	
+
 	@Override
 	public String putSetting(String name, String value) {
 		return settings.put(name, value);
 	}
-	
+
 	@Override
 	public String removeSetting(String name) {
 		return settings.remove(name);
@@ -68,13 +75,15 @@ public class OperatorCallWrapper
 		for(String key : settings.keySet()) {
 			gop.setSetting(key, settings.get(key));
 		}
+		LOG.info(AdditionalData.DEBUG_MARKER, "ВЫПОЛНЯЕТСЯ ОПЕРАТОР '{}' на основе GOP параметра '{}'", getOperationType(), gop.toString());
 		return operator.process(gop);
 	}
-	
+
 	public Object process(OperatorParameter castParam) {
 		for(String key : settings.keySet()) {
 			castParam.putSetting(key, settings.get(key));
 		}
+		LOG.info(AdditionalData.DEBUG_MARKER, "ВЫПОЛНЯЕТСЯ ОПЕРАТОР '{}' на основе OP параметра '{}'", getOperationType(), castParam.getClass().getSimpleName());
 		return operator.process(castParam);
 	}
 
@@ -93,5 +102,5 @@ public class OperatorCallWrapper
 	public void setSettings(Map<String, String> settings) {
 		this.settings = settings;
 	}
-	
+
 }

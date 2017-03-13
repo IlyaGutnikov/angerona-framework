@@ -10,19 +10,38 @@ import com.github.angerona.fw.operators.OperatorCaller;
 /**
  * Implements a generic operator parameter wrapper by using a String to Object
  * map to represent the parameter. It is the task of the operators to translate the
- * GenericOperatorParameter object into a specialized object and to test if all 
+ * GenericOperatorParameter object into a specialized object and to test if all
  * the required parameters are given.
  * @author Tim Janus
  */
 public class GenericOperatorParameter {
 	/** The caller of the operator */
 	private OperatorCaller caller;
-	
+
 	/** The parameter map */
 	private Map<String, Object> parameters = new HashMap<String, Object>();
-	
+
 	private Map<String, String> settings = new HashMap<>();
-	
+
+	@Override
+	public String toString() {
+
+		String returnStr = "";
+
+		returnStr += "OperatorCaller: " + caller.getClass().getSimpleName() + "\n";
+		for (Map.Entry<String, String> entry : settings.entrySet())
+		{
+			returnStr += "setting key: " + entry.getKey() + " value: " + entry.getValue() + "\n";
+		}
+
+		for (Map.Entry<String, Object> entry : parameters.entrySet())
+		{
+			returnStr += "parameter key: " + entry.getKey() + " value: " + entry.getValue() + "\n";
+		}
+
+		return returnStr;
+	}
+
 	/**
 	 * CTor: Requires the caller as parameter
 	 * @param caller	reference to the caller of an operator.
@@ -30,17 +49,17 @@ public class GenericOperatorParameter {
 	public GenericOperatorParameter(OperatorCaller caller) {
 		this(caller, new HashMap<String, String>());
 	}
-	
+
 	public GenericOperatorParameter(OperatorCaller caller, Map<String, String> settings) {
 		this.caller = caller;
 		this.settings.putAll(settings);
 	}
-	
+
 	/** @return the caller of an operator */
 	public OperatorCaller getCaller() {
 		return caller;
 	}
-	
+
 	/**
 	 * Sets the given vales as parameter value using the given name.
 	 * @param name	The name of the parameter to set
@@ -49,11 +68,11 @@ public class GenericOperatorParameter {
 	public void setParameter(String name, Object value) {
 		parameters.put(name, value);
 	}
-	
+
 	public void setSetting(String name, String value) {
 		settings.put(name, value);
 	}
-	
+
 	/**
 	 * Gets the parameter with the given name. If the parameter does not
 	 * exists the method throws an AttributeNotFoundException.
@@ -61,14 +80,14 @@ public class GenericOperatorParameter {
 	 * @return	The reference to the object representing the parameter.
 	 * @throws AttributeNotFoundException
 	 */
-	public Object getParameterRequired(String name) 
+	public Object getParameterRequired(String name)
 		throws AttributeNotFoundException {
 		Object reval = getParameter(name);
 		if(reval == null)
 			throw new AttributeNotFoundException("Cannot find parameter '"+name+"'.");
 		return reval;
 	}
-	
+
 	/**
 	 * Gets the parameter with the given name.
 	 * @param name	The name of the parameter which shall be returned.
@@ -81,7 +100,7 @@ public class GenericOperatorParameter {
 		}
 		return null;
 	}
-	
+
 	public Map<String, String> getSettings() {
 		return settings;
 	}

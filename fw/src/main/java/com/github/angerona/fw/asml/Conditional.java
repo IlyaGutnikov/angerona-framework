@@ -72,6 +72,8 @@ public class Conditional extends ASMLCommand {
 
 		boolean done = false;
 		ifPart.setContext(getContext());
+		super.logInformation("ASMLCommand conditional: ifPart - " + ifPart.toString());
+		super.logInformation("ASMLCommand conditional: ifPart condition - " + ifPart.condition.toString());
 		if(ifPart.condition.evaluate()) {
 			ifPart.execute(getContext());
 			done = true;
@@ -79,6 +81,7 @@ public class Conditional extends ASMLCommand {
 			for(ConditionalSequence cs : elseIfPart) {
 				cs.setContext(getContext());
 				if(cs.condition.evaluate()) {
+					super.logInformation("ASMLCommand conditional: elseIfPart - " + elseIfPart.toString());
 					cs.execute(getContext());
 					done = true;
 					break;
@@ -87,6 +90,8 @@ public class Conditional extends ASMLCommand {
 		}
 
 		if(!done && elseCommandos != null) {
+			super.logInformation("ASMLCommand conditional: elseCommandos - " + elseCommandos.toString());
+
 			elseCommandos.execute(getContext());
 		}
 	}

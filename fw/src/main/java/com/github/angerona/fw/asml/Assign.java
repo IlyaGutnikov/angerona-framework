@@ -9,6 +9,8 @@ import com.github.angerona.fw.error.InvokeException;
 import com.github.angerona.fw.reflection.Context;
 import com.github.angerona.fw.reflection.Value;
 
+import ru.ilyagutnikov.magisterwork.AdditionalData;
+
 /**
  * Implements an assignment command for ASML. It assigns the given value to the
  * given name which acts as identifier in the context.
@@ -53,6 +55,8 @@ public class Assign extends ASMLCommand {
 
 		setParameter(name, value.getValue());
 		LOG.trace("XMLAssign: Set '{}' to '{}'", name, value);
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "ASMLCommand Assign: Set '{}' to '{}'", name, value);
 	}
 
 }
