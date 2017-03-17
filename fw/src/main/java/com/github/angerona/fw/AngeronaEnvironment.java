@@ -71,6 +71,11 @@ public class AngeronaEnvironment  {
 
 	private static AngeronaEnvironment instance;
 
+	/**
+	 * Реализация синглтона
+	 * @return instance
+	 * @author Ilya Gutnikov
+	 */
 	public static synchronized AngeronaEnvironment getInstance() {
 
 		if (instance == null) {
@@ -244,11 +249,11 @@ public class AngeronaEnvironment  {
 	}
 
 	/**
-	 *Добовляет новые простые желаения каждому агенту для теста
+	 * Добавляет новое просто желание выбранному агенту
 	 *
 	 * @author Ilya Gutnikov
 	 */
-	public void addDesiresToAllAgent() {
+	public void addDesireToAgent(String name) {
 
 		String simpleDesireStr = "q_Employee(attend_scm)";
 		FolParserB parser = new FolParserB(new StringReader(simpleDesireStr));
@@ -256,10 +261,9 @@ public class AngeronaEnvironment  {
 			//TODO
 			FolFormula simpleFormula = parser.formula(new FolSignature());
 
-			for (Agent a : getAgents()) {
+			Agent selectedAgent = getAgentByName(name);
+			selectedAgent.getComponent(Desires.class).add(new Desire(simpleFormula));
 
-				a.getComponent(Desires.class).add(new Desire(simpleFormula));
-			}
 
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

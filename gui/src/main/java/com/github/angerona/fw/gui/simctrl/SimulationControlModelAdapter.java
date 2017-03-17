@@ -3,6 +3,8 @@ package com.github.angerona.fw.gui.simctrl;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.swing.JMenu;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +34,7 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 
 	/** the AngeroneEnvironment representing the dynamic simulation */
 	private AngeronaEnvironment environment = AngeronaEnvironment.getInstance();
+	private AgentActionsHelper helper = new AgentActionsHelper();
 
 	/** generate a thread pool using one thread (the worker thread for the simulation) */
 	private final ExecutorService pool = Executors.newFixedThreadPool(1);
@@ -87,7 +90,11 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 						if(environment.initSimulation(simulationConfig)) {
 							setSimulationState(SimulationState.SS_INITALIZED);
 							setSimulationTick(simulationTick);
-							AngeronaWindow.get().enableAgentActions();
+							AngeronaWindow.get().setAgentActionsActive(true);
+							for (JMenu menu : helper.createMenuForAgents()) {
+
+								AngeronaWindow.get().getAgentsActionMenu().add(menu);
+							}
 						}
 					}
 				}
@@ -106,6 +113,7 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 					synchronized(environment) {
 						if(!environment.runOneTick()) {
 							setSimulationState(SimulationState.SS_FINISHED);
+							AngeronaWindow.get().setAgentActionsActive(false);
 						} else {
 							setSimulationTick(simulationTick);
 						}

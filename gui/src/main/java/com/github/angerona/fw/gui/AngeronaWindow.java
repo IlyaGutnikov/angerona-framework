@@ -186,28 +186,7 @@ public class AngeronaWindow extends WindowAdapter
 
 		//мои развлечения с агентами
 		agentsActionsMenu = new JMenu("Agent actions");
-		JMenuItem addDesireToAllAgents = new JMenuItem("Add new Desire to all agents");
 
-		//addDesireToAllAgents.addActionListener("Boss");
-		addDesireToAllAgents.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-
-			}
-		});
-
-		JMenuItem addIntetionToAllAgents = new JMenuItem("Add new Intetion to all agents");
-		addIntetionToAllAgents.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		agentsActionsMenu.add(addDesireToAllAgents);
-		agentsActionsMenu.add(addIntetionToAllAgents);
 		menuBar.add(agentsActionsMenu);
 		agentsActionsMenu.setEnabled(false);
 		////////////////////////////////////
@@ -490,9 +469,9 @@ public class AngeronaWindow extends WindowAdapter
 	 *
 	 * @author Ilya Gutnikov
 	 */
-	public void enableAgentActions() {
+	public void setAgentActionsActive(Boolean isActive) {
 
-		agentsActionsMenu.setEnabled(true);
+		agentsActionsMenu.setEnabled(isActive);
 	}
 
 	public JMenu getAgentsActionMenu() {
