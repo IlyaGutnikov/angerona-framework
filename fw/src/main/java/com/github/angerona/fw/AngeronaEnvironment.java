@@ -18,6 +18,7 @@ import ru.ilyagutnikov.magisterwork.AdditionalData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.angerona.fw.comm.Inform;
 import com.github.angerona.fw.comm.SpeechAct;
 import com.github.angerona.fw.error.AgentIdException;
 import com.github.angerona.fw.error.AgentInstantiationException;
@@ -229,7 +230,7 @@ public class AngeronaEnvironment  {
 				a.setAgent(getAgentByName(a.getSenderId()));
 				agent.getComponent(ScriptingComponent.class).add(a);
 
-				LOG.info(AdditionalData.DEBUG_MARKER, "Для агента '{}' был создан речевой акт '{}'", agent.getName(), a);
+				LOG.info(AdditionalData.DEBUG_MARKER, "Для агента '{}' был создан речевой акт (intetion) '{}'", agent.getName(), a);
 			}
 		}
 
@@ -264,6 +265,26 @@ public class AngeronaEnvironment  {
 			Agent selectedAgent = getAgentByName(name);
 			selectedAgent.getComponent(Desires.class).add(new Desire(simpleFormula));
 
+
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void addIntetionToAgent(String name) {
+
+		Agent selectedAgent = getAgentByName(name);
+		String simpleInform = "inform";
+		FolParserB parser = new FolParserB(new StringReader(simpleInform));
+
+		try {
+
+			FolFormula simpleFormula = parser.formula(new FolSignature());
+			Action simpleAction = new Inform(selectedAgent, "Employee", simpleFormula);
+
+			selectedAgent.getComponent(ScriptingComponent.class).add(simpleAction);
 
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

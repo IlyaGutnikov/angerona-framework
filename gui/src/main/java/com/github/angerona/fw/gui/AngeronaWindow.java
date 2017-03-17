@@ -186,7 +186,7 @@ public class AngeronaWindow extends WindowAdapter
 
 		//мои развлечения с агентами
 		agentsActionsMenu = new JMenu("Agent actions");
-
+		agentsActionsMenu.removeAll();
 		menuBar.add(agentsActionsMenu);
 		agentsActionsMenu.setEnabled(false);
 		////////////////////////////////////

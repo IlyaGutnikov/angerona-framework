@@ -25,8 +25,8 @@ public class AgentActionsHelper {
 
 			JMenu menu = new JMenu(agentName);
 			menu.add(addDesireAction(agentName));
+			menu.add(addIntentionAction(agentName));
 			menus.add(menu);
-
 		}
 
 		return menus;
@@ -52,6 +52,28 @@ public class AgentActionsHelper {
 		});
 
 		return addDesire;
+	}
+
+	/**
+	 *
+	 * @param agentName
+	 * @return
+	 * @author Ilya Gutnikov
+	 */
+	private JMenuItem addIntentionAction(String agentName) {
+
+		JMenuItem addIntetion = new JMenuItem(agentName + ": add simple intention");
+		addIntetion.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String agentName = e.getActionCommand().substring(0, e.getActionCommand().indexOf(":"));
+				AngeronaEnvironment.getInstance().addIntetionToAgent(agentName);
+
+			}
+		});
+
+		return addIntetion;
 	}
 
 }
