@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.angerona.fw.Angerona;
 import com.github.angerona.fw.AngeronaEnvironment;
+import com.github.angerona.fw.gui.AngeronaWindow;
 import com.github.angerona.fw.serialize.SimulationConfiguration;
 import com.github.angerona.fw.util.ModelAdapter;
 
@@ -30,7 +31,7 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 	private SimulationState simulationState = SimulationState.SS_UNDEFINED;
 
 	/** the AngeroneEnvironment representing the dynamic simulation */
-	private AngeronaEnvironment environment = new AngeronaEnvironment();
+	private AngeronaEnvironment environment = AngeronaEnvironment.getInstance();
 
 	/** generate a thread pool using one thread (the worker thread for the simulation) */
 	private final ExecutorService pool = Executors.newFixedThreadPool(1);
@@ -86,6 +87,7 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 						if(environment.initSimulation(simulationConfig)) {
 							setSimulationState(SimulationState.SS_INITALIZED);
 							setSimulationTick(simulationTick);
+							AngeronaWindow.get().enableAgentActions();
 						}
 					}
 				}

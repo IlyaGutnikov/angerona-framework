@@ -81,6 +81,9 @@ public class AngeronaWindow extends WindowAdapter
 	/** text are used to show error messages */
 	private JTextArea txtErrorMsg;
 
+	private JMenuBar menuBar;
+	private JMenu agentsActionsMenu;
+
 	/** scroll pane that embeds the text are to show error messages */
 	private JScrollPane errorMsgScroll;
 
@@ -146,7 +149,7 @@ public class AngeronaWindow extends WindowAdapter
 	}
 
 	private void createMenu() {
-		JMenuBar menuBar = new JMenuBar();
+		menuBar = new JMenuBar();
 		JMenu menuFile = new JMenu("File");
 
 		JMenuItem exit = new JMenuItem("Exit");
@@ -180,6 +183,34 @@ public class AngeronaWindow extends WindowAdapter
 				createDefaultPerspective();
 			}
 		});
+
+		//мои развлечения с агентами
+		agentsActionsMenu = new JMenu("Agent actions");
+		JMenuItem addDesireToAllAgents = new JMenuItem("Add new Desire to all agents");
+
+		//addDesireToAllAgents.addActionListener("Boss");
+		addDesireToAllAgents.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+
+			}
+		});
+
+		JMenuItem addIntetionToAllAgents = new JMenuItem("Add new Intetion to all agents");
+		addIntetionToAllAgents.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		agentsActionsMenu.add(addDesireToAllAgents);
+		agentsActionsMenu.add(addIntetionToAllAgents);
+		menuBar.add(agentsActionsMenu);
+		agentsActionsMenu.setEnabled(false);
+		////////////////////////////////////
 
 		menuWindow.add(miCreate);
 		menuWindow.add(miReset);
@@ -452,6 +483,21 @@ public class AngeronaWindow extends WindowAdapter
 
 	public JFrame getMainWindow(){
 		return mainWindow;
+	}
+
+	/**
+	 *
+	 *
+	 * @author Ilya Gutnikov
+	 */
+	public void enableAgentActions() {
+
+		agentsActionsMenu.setEnabled(true);
+	}
+
+	public JMenu getAgentsActionMenu() {
+
+		return agentsActionsMenu;
 	}
 
 	@Override

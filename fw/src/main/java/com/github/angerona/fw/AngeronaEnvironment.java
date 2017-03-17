@@ -1,13 +1,19 @@
 package com.github.angerona.fw;
 
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.tweety.logics.fol.parser.FolParser;
+import net.sf.tweety.logics.fol.parser.FolParserB;
+import net.sf.tweety.logics.fol.parser.ParseException;
 import net.sf.tweety.logics.fol.syntax.FolFormula;
+import net.sf.tweety.logics.fol.syntax.FolSignature;
 import ru.ilyagutnikov.magisterwork.AdditionalData;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +66,17 @@ public class AngeronaEnvironment  {
 	/**
 	 * Default Ctor: Generates the default-behavior.
 	 */
-	public AngeronaEnvironment() {
+	private AngeronaEnvironment() {
+	}
+
+	private static AngeronaEnvironment instance;
+
+	public static synchronized AngeronaEnvironment getInstance() {
+
+		if (instance == null) {
+			instance = new AngeronaEnvironment();
+		}
+		return instance;
 	}
 
 	/**
@@ -225,6 +241,31 @@ public class AngeronaEnvironment  {
 		Angerona.getInstance().onTickDone(this);
 
 		return ready = true;
+	}
+
+	/**
+	 *Добовляет новые простые желаения каждому агенту для теста
+	 *
+	 * @author Ilya Gutnikov
+	 */
+	public void addDesiresToAllAgent() {
+
+		String simpleDesireStr = "q_Employee(attend_scm)";
+		FolParserB parser = new FolParserB(new StringReader(simpleDesireStr));
+		try {
+			//TODO
+			FolFormula simpleFormula = parser.formula(new FolSignature());
+
+			for (Agent a : getAgents()) {
+
+				a.getComponent(Desires.class).add(new Desire(simpleFormula));
+			}
+
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
