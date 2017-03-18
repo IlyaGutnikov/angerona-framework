@@ -28,6 +28,8 @@ import com.github.angerona.fw.error.AgentIdException;
 import com.github.angerona.fw.error.AgentInstantiationException;
 import com.github.angerona.fw.internal.Entity;
 import com.github.angerona.fw.internal.PluginInstantiator;
+import com.github.angerona.fw.logic.AngeronaAnswer;
+import com.github.angerona.fw.logic.AnswerValue;
 import com.github.angerona.fw.logic.Beliefs;
 import com.github.angerona.fw.logic.Desires;
 import com.github.angerona.fw.logic.ScriptingComponent;
@@ -303,6 +305,37 @@ public class AngeronaEnvironment  {
 			Action simpleActionQ = new Query(selectedAgent, getAnotherAgentInEnv(selectedAgent).getName(), reasonToFire);
 
 			selectedAgent.getComponent(ScriptingComponent.class).add(simpleActionQ);
+
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 *
+	 * @param name
+	 * @author Ilya Gutnikov
+	 */
+	public void addSubgoalToAgent(String name) {
+
+		Agent ag = getAgentByName(name);
+		FOLAtom reasonToFire = new FOLAtom(new Predicate("attend_scm_test_sg"));
+
+		String simpleDesireStr = "q_"+ getAnotherAgentInEnv(ag).getName() +"(attend_scm_test_sg)";
+
+		FolParserB parser = new FolParserB(new StringReader(simpleDesireStr));
+
+		try {
+
+			FolFormula simpleFormula = parser.formula(new FolSignature());
+			Desire des = new Desire(simpleFormula);
+
+			Subgoal sg = new Subgoal(ag, des);
+
+			sg.newStack(new Query(ag, getAnotherAgentInEnv(ag).getName(), reasonToFire));
+			ag.getPlanComponent().addPlan(sg);
 
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

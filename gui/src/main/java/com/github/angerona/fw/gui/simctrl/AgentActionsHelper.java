@@ -26,6 +26,7 @@ public class AgentActionsHelper {
 			JMenu menu = new JMenu(agentName);
 			menu.add(addDesireAction(agentName));
 			menu.add(addIntentionAction(agentName));
+			menu.add(addIntettionSubgoal(agentName));
 			menus.add(menu);
 		}
 
@@ -74,6 +75,22 @@ public class AgentActionsHelper {
 		});
 
 		return addIntetion;
+	}
+
+	private JMenuItem addIntettionSubgoal(String agentName) {
+
+		JMenuItem addSubgoal = new JMenuItem(agentName + ": add simple intention (subgoal)");
+		addSubgoal.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String agentName = e.getActionCommand().substring(0, e.getActionCommand().indexOf(":"));
+				AngeronaEnvironment.getInstance().addSubgoalToAgent(agentName);
+
+			}
+		});
+
+		return addSubgoal;
 	}
 
 }
