@@ -18,18 +18,28 @@
         <agent-config source="config/agents/default_agent.xml" />
         <beliefbase-config source="config/beliefbases/example_beliefbase.xml" />
 
+		<capability>Answer</capability>
+
 		<!-- <data key="Confidential">(Boss, __DEFAULT__, attend_scm)</data> -->
 	</agent-instance>
 
 	<agent-instance>
 		<name>Boss</name>
-
-
-
         <agent-config source="config/agents/default_agent.xml" />
         <beliefbase-config source="config/beliefbases/example_beliefbase.xml" />
 
        <desire>q_Employee(attend_scm)</desire>
+
+       <script>
+        	<SpeechAct type="Query">
+        		<sender>Boss</sender>
+        		<receiver>Employee</receiver>
+        		<question>DDD</question>
+        	</SpeechAct>
+        </script>
+
+        <capability>Query</capability>
+
 	</agent-instance>
 
 	<!-- Undocument the following to generate a Peception at the beginning of the simulation: -->

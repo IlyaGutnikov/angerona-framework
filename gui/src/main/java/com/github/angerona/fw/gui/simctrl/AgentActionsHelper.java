@@ -62,7 +62,7 @@ public class AgentActionsHelper {
 	 */
 	private JMenuItem addIntentionAction(String agentName) {
 
-		JMenuItem addIntetion = new JMenuItem(agentName + ": add simple intention");
+		JMenuItem addIntetion = new JMenuItem(agentName + ": add simple intention (action)");
 		addIntetion.addActionListener(new ActionListener() {
 
 			@Override

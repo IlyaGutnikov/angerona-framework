@@ -1,15 +1,18 @@
 package com.github.angerona.fw;
 
 import java.io.StringReader;
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.tweety.logics.commons.syntax.Predicate;
 import net.sf.tweety.logics.fol.parser.FolParser;
 import net.sf.tweety.logics.fol.parser.FolParserB;
 import net.sf.tweety.logics.fol.parser.ParseException;
+import net.sf.tweety.logics.fol.syntax.FOLAtom;
 import net.sf.tweety.logics.fol.syntax.FolFormula;
 import net.sf.tweety.logics.fol.syntax.FolSignature;
 import ru.ilyagutnikov.magisterwork.AdditionalData;
@@ -19,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.angerona.fw.comm.Inform;
+import com.github.angerona.fw.comm.Query;
 import com.github.angerona.fw.comm.SpeechAct;
 import com.github.angerona.fw.error.AgentIdException;
 import com.github.angerona.fw.error.AgentInstantiationException;
@@ -256,13 +260,14 @@ public class AngeronaEnvironment  {
 	 */
 	public void addDesireToAgent(String name) {
 
-		String simpleDesireStr = "q_Employee(attend_scm)";
+		Agent selectedAgent = getAgentByName(name);
+		String simpleDesireStr = "q_"+ getAnotherAgentInEnv(selectedAgent).getName() +"(attend_scm_test_des)";
+
 		FolParserB parser = new FolParserB(new StringReader(simpleDesireStr));
+
 		try {
 			//TODO
 			FolFormula simpleFormula = parser.formula(new FolSignature());
-
-			Agent selectedAgent = getAgentByName(name);
 			selectedAgent.getComponent(Desires.class).add(new Desire(simpleFormula));
 
 
@@ -273,24 +278,57 @@ public class AngeronaEnvironment  {
 
 	}
 
+	/**
+	 *
+	 * @param name
+	 * @author Ilya Gutnikov
+	 */
 	public void addIntetionToAgent(String name) {
 
 		Agent selectedAgent = getAgentByName(name);
+		//Agent anotherAgent = getAgents().
 		String simpleInform = "inform";
-		FolParserB parser = new FolParserB(new StringReader(simpleInform));
+		String simpleQuery = "c";
+		FolParserB parserInform = new FolParserB(new StringReader(simpleInform));
+		FolParserB parserQuery = new FolParserB(new StringReader(simpleQuery));
 
 		try {
 
-			FolFormula simpleFormula = parser.formula(new FolSignature());
-			Action simpleAction = new Inform(selectedAgent, "Employee", simpleFormula);
+			FolFormula simpleInformFormula = parserInform.formula(new FolSignature());
+			FolFormula simpleQueryFormula = parserQuery.formula(new FolSignature());
 
-			selectedAgent.getComponent(ScriptingComponent.class).add(simpleAction);
+			FOLAtom reasonToFire = new FOLAtom(new Predicate("attend_scm_test_int"));
+
+			Action simpleAction = new Inform(selectedAgent, getAnotherAgentInEnv(selectedAgent).getName(), simpleInformFormula);
+			Action simpleActionQ = new Query(selectedAgent, getAnotherAgentInEnv(selectedAgent).getName(), reasonToFire);
+
+			selectedAgent.getComponent(ScriptingComponent.class).add(simpleActionQ);
 
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 *
+	 * @param existingAgent
+	 * @return
+	 * @author Ilya Gutnikov
+	 */
+	public Agent getAnotherAgentInEnv(Agent existingAgent) {
+
+		String[] agentNames = getAgentNames().toArray(new String[getAgentNames().size()]);
+		String anotherAgentName = "";
+		for (String string : agentNames) {
+
+			if (!existingAgent.getName().equals(string)) {
+				anotherAgentName = string;
+			}
+		}
+
+		return getAgentByName(anotherAgentName);
 	}
 
 	/**
