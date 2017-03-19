@@ -83,6 +83,7 @@ public class AngeronaWindow extends WindowAdapter
 
 	private JMenuBar menuBar;
 	private JMenu agentsActionsMenu;
+	private JMenu envActions;
 
 	/** scroll pane that embeds the text are to show error messages */
 	private JScrollPane errorMsgScroll;
@@ -186,10 +187,32 @@ public class AngeronaWindow extends WindowAdapter
 
 		//мои развлечения с агентами
 		agentsActionsMenu = new JMenu("Agent actions");
+
 		agentsActionsMenu.removeAll();
 		menuBar.add(agentsActionsMenu);
 		agentsActionsMenu.setEnabled(false);
 		////////////////////////////////////
+
+		envActions = new JMenu("Environment actions");
+		JMenuItem setEnvInfinite = new JMenuItem("Set environment to infinite ticks");
+		setEnvInfinite.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (e.getActionCommand().equals("Set environment to infinite ticks")) {
+					setEnvInfinite.setText("Set environment to non-infinite ticks");
+					AngeronaEnvironment.getInstance().setInfiniteTicksInEnvinronment(true);
+
+				} else {
+					setEnvInfinite.setText("Set environment to infinite ticks");
+					AngeronaEnvironment.getInstance().setInfiniteTicksInEnvinronment(false);
+				}
+
+			}
+		});
+
+		envActions.add(setEnvInfinite);
+		envActions.setEnabled(false);
+		menuBar.add(envActions);
 
 		menuWindow.add(miCreate);
 		menuWindow.add(miReset);
@@ -474,9 +497,14 @@ public class AngeronaWindow extends WindowAdapter
 		agentsActionsMenu.setEnabled(isActive);
 	}
 
-	public JMenu getAgentsActionMenu() {
+	public JMenu getAgentsActionsMenu() {
 
 		return agentsActionsMenu;
+	}
+
+	public JMenu getEnvActionsMenu() {
+
+		return envActions;
 	}
 
 	@Override

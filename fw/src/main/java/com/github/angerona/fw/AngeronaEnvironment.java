@@ -322,7 +322,7 @@ public class AngeronaEnvironment  {
 
 		Agent ag = getAgentByName(name);
 		FOLAtom reasonToFire = new FOLAtom(new Predicate("attend_scm_test_sg"));
-
+		//В desire можно писать что захочешь
 		String simpleDesireStr = "q_"+ getAnotherAgentInEnv(ag).getName() +"(attend_scm_test_sg)";
 
 		FolParserB parser = new FolParserB(new StringReader(simpleDesireStr));
@@ -342,6 +342,16 @@ public class AngeronaEnvironment  {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 *
+	 * @param isInfinite
+	 * @author Ilya Gutnikov
+	 */
+	public void setInfiniteTicksInEnvinronment(boolean isInfinite) {
+
+		behavior.setInfinteTicks(isInfinite);
 	}
 
 	/**

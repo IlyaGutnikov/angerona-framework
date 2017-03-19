@@ -90,12 +90,14 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 						if(environment.initSimulation(simulationConfig)) {
 							setSimulationState(SimulationState.SS_INITALIZED);
 							setSimulationTick(simulationTick);
-							AngeronaWindow.get().setAgentActionsActive(true);
+							AngeronaWindow.get().getAgentsActionsMenu().setEnabled(true);
 
-							AngeronaWindow.get().getAgentsActionMenu().removeAll();
+							AngeronaWindow.get().getEnvActionsMenu().setEnabled(true);
+
+							AngeronaWindow.get().getAgentsActionsMenu().removeAll();
 							for (JMenu menu : helper.createMenuForAgents()) {
 
-								AngeronaWindow.get().getAgentsActionMenu().add(menu);
+								AngeronaWindow.get().getAgentsActionsMenu().add(menu);
 							}
 						}
 					}

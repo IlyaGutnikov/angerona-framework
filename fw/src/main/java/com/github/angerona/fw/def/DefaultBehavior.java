@@ -33,9 +33,16 @@ public class DefaultBehavior implements EnvironmentBehavior  {
 
 	protected boolean somethingHappens = false;
 
+	protected boolean isInfiniteTicks = false;
+
 	/** the actual simulation tick */
 	protected int tick = 0;
 
+	@Override
+	public void setInfinteTicks(boolean isInfinte) {
+
+		isInfiniteTicks = isInfinte;
+	}
 
 	@Override
 	public void sendAction(AngeronaEnvironment env, Action act) {
@@ -80,6 +87,8 @@ public class DefaultBehavior implements EnvironmentBehavior  {
 	@Override
 	public boolean runOneTick(AngeronaEnvironment env) {
 
+		//TODO поменять все return на true
+
 		LOG.info(AdditionalData.DEBUG_MARKER, "Один тик системы в поведении " + this.getClass());
 		doingTick = true;
 
@@ -91,7 +100,7 @@ public class DefaultBehavior implements EnvironmentBehavior  {
 			}
 		}
 
-		if(!somethingHappens && tick != 0)
+		if(!somethingHappens && tick != 0 && !isInfiniteTicks)
 			return false;
 
 		somethingHappens = false;
