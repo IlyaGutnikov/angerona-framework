@@ -118,6 +118,7 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 						if(!environment.runOneTick()) {
 							setSimulationState(SimulationState.SS_FINISHED);
 							AngeronaWindow.get().setAgentActionsActive(false);
+							AngeronaWindow.get().getEnvActionsMenu().setEnabled(false);
 						} else {
 							setSimulationTick(simulationTick);
 						}
