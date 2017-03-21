@@ -27,6 +27,7 @@ public class AgentActionsHelper {
 			menu.add(addDesireAction(agentName));
 			menu.add(addIntentionAction(agentName));
 			menu.add(addIntettionSubgoal(agentName));
+			menu.add(addPereception(agentName));
 			menus.add(menu);
 		}
 
@@ -91,6 +92,23 @@ public class AgentActionsHelper {
 		});
 
 		return addSubgoal;
+	}
+
+	private JMenuItem addPereception(String agentName) {
+
+		JMenuItem addPercept = new JMenuItem(agentName + ": add simple perception (with inform)");
+		addPercept.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String agentName = e.getActionCommand().substring(0, e.getActionCommand().indexOf(":"));
+				AngeronaEnvironment.getInstance().addPerception(agentName);
+
+			}
+		});
+
+		return addPercept;
+
 	}
 
 }

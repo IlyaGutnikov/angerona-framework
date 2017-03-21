@@ -242,6 +242,7 @@ public class AngeronaEnvironment  {
 
 		// post the initial perceptions defined in the simulation configuration
 		// file to the environment.
+
 		for(Perception p : config.getPerceptions()) {
 			if(p instanceof Action) {
 				this.sendAction((Action)p);
@@ -341,6 +342,21 @@ public class AngeronaEnvironment  {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	}
+
+	/**
+	 *
+	 * @param name
+	 */
+	public void addPerception(String name) {
+
+		Agent ag = getAgentByName(name);
+		FOLAtom testAtom = new FOLAtom(new Predicate("attend_scm_test_percept"));
+
+		Perception simpleAction = new Inform(ag, getAnotherAgentInEnv(ag).getName(), testAtom);
+
+		sendAction((Action)simpleAction);
 
 	}
 
