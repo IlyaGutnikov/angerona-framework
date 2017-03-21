@@ -78,6 +78,12 @@ public class AgentActionsHelper {
 		return addIntetion;
 	}
 
+	/**
+	 *
+	 * @param agentName
+	 * @return
+	 * @author Ilya Gutnikov
+	 */
 	private JMenuItem addIntettionSubgoal(String agentName) {
 
 		JMenuItem addSubgoal = new JMenuItem(agentName + ": add simple intention (subgoal)");
@@ -94,6 +100,12 @@ public class AgentActionsHelper {
 		return addSubgoal;
 	}
 
+	/**
+	 *
+	 * @param agentName
+	 * @return
+	 * @author Ilya Gutnikov
+	 */
 	private JMenuItem addPereception(String agentName) {
 
 		JMenuItem addPercept = new JMenuItem(agentName + ": add simple perception (with inform)");
