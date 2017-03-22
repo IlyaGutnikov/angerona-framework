@@ -1,0 +1,27 @@
+<simulation-configuration>
+	<name>Smart Home Agents</name>
+	<category>SHAgents</category>
+	<behavior>com.github.angerona.fw.def.DefaultBehavior</behavior>
+	<description>
+		Smart Home Agents by Ilya Gutnikov, BMSTU, 2017.
+	</description>
+
+	<agent-instance>
+		<name>User</name>
+        <agent-config source="config/agents/default_agent.xml" />
+        <beliefbase-config source="config/beliefbases/example_beliefbase.xml" />
+	</agent-instance>
+
+	<agent-instance>
+		<name>SmartHome</name>
+        <agent-config source="config/agents/default_agent.xml" />
+        <beliefbase-config source="config/beliefbases/example_beliefbase.xml" />
+	</agent-instance>
+
+	<agent-instance>
+		<name>RealWorld</name>
+        <agent-config source="config/agents/default_agent.xml" />
+        <beliefbase-config source="config/beliefbases/example_beliefbase.xml" />
+	</agent-instance>
+
+</simulation-configuration>
