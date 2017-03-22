@@ -487,14 +487,34 @@ public class AngeronaWindow extends WindowAdapter
 		return mainWindow;
 	}
 
+	/**
+	 * Получает подменю с действиями над агентами
+	 * @return agentsActionsMenu
+	 * @author Ilya Gutnikov
+	 */
 	public JMenu getAgentsActionsMenu() {
 
 		return agentsActionsMenu;
 	}
 
+	/**
+	 * Получает подменю с действиями над окружением
+	 * @return
+	 * @author Ilya Gutnikov
+	 */
 	public JMenu getEnvActionsMenu() {
 
 		return envActions;
+	}
+
+	/**
+	 * Получает всю панель с подменю
+	 * @return menuBar
+	 * @author Ilya Gutnikov
+	 */
+	public JMenuBar getMenuBar() {
+
+		return menuBar;
 	}
 
 	@Override

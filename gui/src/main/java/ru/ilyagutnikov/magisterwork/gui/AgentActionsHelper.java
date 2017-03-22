@@ -1,4 +1,4 @@
-package com.github.angerona.fw.gui.simctrl;
+package ru.ilyagutnikov.magisterwork.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

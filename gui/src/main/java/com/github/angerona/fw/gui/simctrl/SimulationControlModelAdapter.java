@@ -15,6 +15,7 @@ import com.github.angerona.fw.serialize.SimulationConfiguration;
 import com.github.angerona.fw.util.ModelAdapter;
 
 import ru.ilyagutnikov.magisterwork.AdditionalData;
+import ru.ilyagutnikov.magisterwork.gui.AgentActionsHelper;
 
 /**
  * Implements the SimulatonControlModel
@@ -90,8 +91,8 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 						if(environment.initSimulation(simulationConfig)) {
 							setSimulationState(SimulationState.SS_INITALIZED);
 							setSimulationTick(simulationTick);
-							AngeronaWindow.get().getAgentsActionsMenu().setEnabled(true);
 
+							AngeronaWindow.get().getAgentsActionsMenu().setEnabled(true);
 							AngeronaWindow.get().getEnvActionsMenu().setEnabled(true);
 
 							AngeronaWindow.get().getAgentsActionsMenu().removeAll();
