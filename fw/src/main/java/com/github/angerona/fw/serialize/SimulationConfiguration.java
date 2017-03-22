@@ -18,78 +18,84 @@ import com.github.angerona.fw.Perception;
 
 /**
  * Class instance holding all the configuration options for a complete simulation.
- * 
+ *
  * @author Tim Janus
  */
 @Root(name="simulation-configuration")
 public class SimulationConfiguration implements Resource {
 	public static final String RESOURCE_TYPE = "Simulation-Template";
-	
+
 	/** name of the simulation */
 	@Element(name="name")
 	protected String name;
-	
-	/** A multi level category name where '/' indicates that a new category level begins 
+
+	/** A multi level category name where '/' indicates that a new category level begins
 	 *	scm/asp is a category with two levels which is represented by two nodes in a tree
-	 *	view for example. An empty string indicates no category. 
+	 *	view for example. An empty string indicates no category.
 	 */
 	@Element(name="category", required=false)
 	protected String category = "";
 
 	@Element(name="description", required=false)
 	protected String description = "";
-	
+
+	/**
+	 * Если указано true, то цикла агента будет бесконечным
+	 */
+	@Element(name="infinite-cycle", required=false)
+	protected boolean infiniteCycle = false;
+
 	/** used behavior implementation */
 	@Element(name="behavior", required=false)
 	protected String behaviorCls;
-	
+
 	/** collection of data structure containing the agents of the simulation */
 	@ElementList(name="agents", inline=true)
 	protected List<AgentInstance> agents = new LinkedList<AgentInstance>();
-	
+
 	@ElementList(name="perception", entry="perception", inline=true, empty=false, required=false)
 	protected List<Perception> perceptions = new LinkedList<Perception>();
-	
-	
+
+
 	protected File filepath;
-	
+
 	public File getFile() {
 		return filepath;
 	}
-	
+
 	public void setFile(File file) {
 		this.filepath = file;
 	}
-	
+
 	/** @return name of the simulation */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @return 	A multi level category name where '/' indicates that a new category level begins 
+	 * @return 	A multi level category name where '/' indicates that a new category level begins
 	 *			scm/asp is a category with two levels which is represented by two nodes in a tree
 	 *			view for example. An empty string indicates no category.
 	 */
 	public String getCategory() {
 		return category;
 	}
-	
+
 	/** @return the name of the class of the used behavior implementation */
 	public String getBehaviorCls() {
 		return behaviorCls;
 	}
-	
+
 	/** @return collection of data structure containing the agents of the simulation */
 	public List<AgentInstance> getAgents() {
 		return Collections.unmodifiableList(agents);
 	}
-	
+
 	/** @return collection of perceptions which should be fired initially into the simulation */
 	public List<Perception> getPerceptions() {
 		return Collections.unmodifiableList(perceptions);
 	}
-	
+
 	/**
 	 * Helper method: Loads the simulation configuration data structure from the given filename
 	 * @param source 	reference to the file containing the simulation configuration.
@@ -98,10 +104,10 @@ public class SimulationConfiguration implements Resource {
 	public static SimulationConfiguration loadXml(File source) {
 		return SerializeHelper.get().loadXmlTry(SimulationConfiguration.class, source);
 	}
-	
+
 	@Validate
 	public void validate() throws PersistenceException {
-		
+
 		// test for duplicate agent names:
 		Set<String> agentNames = new HashSet<>();
 		for(AgentInstance ai: agents) {
@@ -116,13 +122,13 @@ public class SimulationConfiguration implements Resource {
 			if(!agentNames.containsAll(ai.fileViewMap.keySet())) {
 				Set<String> notMapped = new HashSet<>(ai.fileViewMap.keySet());
 				notMapped.removeAll(agentNames);
-				throw new PersistenceException("The view-beliefbase-config of agent '%s'" + 
+				throw new PersistenceException("The view-beliefbase-config of agent '%s'" +
 						" cannot be mapped cause an agents with names '%s' does not exist",
 						ai.getName(), notMapped);
 			}
 		}
 	}
-	
+
 	@Commit
 	public void commit() {
 		for(AgentInstance ai : agents) {
@@ -143,5 +149,15 @@ public class SimulationConfiguration implements Resource {
 	@Override
 	public String getResourceType() {
 		return RESOURCE_TYPE;
+	}
+
+	/**
+	 * Возвращает тип цикла, если true - цикл бесконечный
+	 * @return infiniteCycle
+	 * @author Ilya Gutnikov
+	 */
+	public boolean isInfiniteCycle() {
+
+		return infiniteCycle;
 	}
 }

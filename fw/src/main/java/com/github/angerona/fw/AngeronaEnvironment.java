@@ -254,6 +254,12 @@ public class AngeronaEnvironment  {
 
 		Angerona.getInstance().onTickDone(this);
 
+		//новое поле в конфигурации - бесконечные тики
+		if (config.isInfiniteCycle()) {
+
+			setInfiniteTicksInEnvinronment(true);
+		}
+
 		return ready = true;
 	}
 
@@ -362,8 +368,8 @@ public class AngeronaEnvironment  {
 	}
 
 	/**
-	 *
-	 * @param isInfinite
+	 * Включает/выключает бесконечные тики в окужении
+	 * @param isInfinite true - бесконечные тики
 	 * @author Ilya Gutnikov
 	 */
 	public void setInfiniteTicksInEnvinronment(boolean isInfinite) {

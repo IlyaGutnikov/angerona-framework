@@ -487,16 +487,6 @@ public class AngeronaWindow extends WindowAdapter
 		return mainWindow;
 	}
 
-	/**
-	 *
-	 *
-	 * @author Ilya Gutnikov
-	 */
-	public void setAgentActionsActive(Boolean isActive) {
-
-		agentsActionsMenu.setEnabled(isActive);
-	}
-
 	public JMenu getAgentsActionsMenu() {
 
 		return agentsActionsMenu;
