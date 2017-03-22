@@ -1,0 +1,6 @@
+<shdevice-configuration>
+	<name>Light</name>
+	<device-type>SH_Light</device-type>
+	<category>Lights</category>
+	<description>Just a fuckin light</description>
+</shdevice-configuration>

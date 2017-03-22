@@ -10,9 +10,14 @@ import javax.swing.JMenuItem;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.angerona.fw.AngeronaEnvironment;
 import com.github.angerona.fw.gui.AngeronaWindow;
 import com.github.angerona.fw.serialize.SimulationConfiguration;
+
+import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfigReal;
 
 /**
  *
@@ -20,6 +25,8 @@ import com.github.angerona.fw.serialize.SimulationConfiguration;
  *
  */
 public class SHAgentsGUI {
+
+	private static Logger LOG = LoggerFactory.getLogger(SHAgentsGUI.class);
 
 	private SHAgentsGUI() {
 	}
@@ -76,6 +83,11 @@ public class SHAgentsGUI {
 		return SHAgentsMenu;
 	}
 
+	/**
+	 * Загружает файл устройства
+	 *
+	 * @author Ilya Gutnikov
+	 */
 	private void onLoadDeviceXML() {
 
 		FileFilter filter = new FileNameExtensionFilter("XML File","xml");
@@ -87,8 +99,21 @@ public class SHAgentsGUI {
 		int reval = fileDialog.showOpenDialog(null);
 		if (reval == JFileChooser.APPROVE_OPTION) {
 			File file = fileDialog.getSelectedFile();
-		}
+			SHDeviceConfigReal device = SHDeviceConfigReal.loadXml(file);
+			addDeviceToRealWorldDevicesList(device);
 
+			//TODO отправить агенту умного дома
+		}
+	}
+
+	/**
+	 * Добавляет устройство в список устройств реального мира
+	 * @param device
+	 * @author Ilya Gutnikov
+	 */
+	private void addDeviceToRealWorldDevicesList(SHDeviceConfigReal device) {
+
+		shDevicesMenu.add(new JMenuItem(device.getName()));
 	}
 
 }

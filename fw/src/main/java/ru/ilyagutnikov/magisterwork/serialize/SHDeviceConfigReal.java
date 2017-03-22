@@ -1,9 +1,13 @@
 package ru.ilyagutnikov.magisterwork.serialize;
 
+import java.io.File;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 import com.github.angerona.fw.serialize.Resource;
+import com.github.angerona.fw.serialize.SerializeHelper;
+import com.github.angerona.fw.serialize.SimulationConfiguration;
 
 /**
  * Класс, который хранит в себе описание дейвайса Умного Дома
@@ -57,6 +61,8 @@ public class SHDeviceConfigReal implements SHDeviceConfig {
 		return SHDeviceType.valueOf(deviceType);
 	}
 
-
+	public static SHDeviceConfigReal loadXml(File source) {
+		return SerializeHelper.get().loadXmlTry(SHDeviceConfigReal.class, source);
+	}
 
 }
