@@ -1,5 +1,7 @@
 package com.github.angerona.fw;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -24,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.github.angerona.fw.comm.Inform;
 import com.github.angerona.fw.comm.Query;
 import com.github.angerona.fw.comm.SpeechAct;
+import com.github.angerona.fw.comm.SpeechAct.SpeechActType;
 import com.github.angerona.fw.error.AgentIdException;
 import com.github.angerona.fw.error.AgentInstantiationException;
 import com.github.angerona.fw.internal.Entity;
@@ -214,8 +217,6 @@ public class AngeronaEnvironment  {
 
 		Angerona.getInstance().onNewSimulation(this);
 
-		//TODO ковырять здесь
-
 		// report the initialized data of the agent to the report system.
 		for(AgentInstance ai : config.getAgents()) {
 			Agent agent = getAgentByName(ai.getName());
@@ -388,6 +389,97 @@ public class AngeronaEnvironment  {
 		}
 
 		return getAgentByName(anotherAgentName);
+	}
+
+	/**
+	 * Отправка перцепта
+	 * @param percept созданный перцепт, со всей информацией внутри
+	 * @author Ilya Gutnikov
+	 */
+	public void sendPerception(Perception percept) {
+
+		if (percept instanceof Action) {
+
+			sendAction(((Action)percept));
+		}
+	}
+
+	/**
+	 * Отправка перцепта
+	 * @param sender агент-отправитель
+	 * @param receiver агент-получатель
+	 * @param atom атом логики
+	 * @param type тип перцепта, либо Inform (INFORMATIVE), либо Query (REQUESTING)
+	 * @author Ilya Gutnikov
+	 */
+	public void sendPerception(Agent sender, Agent receiver, FOLAtom atom, SpeechActType type) {
+
+		Perception newPercept = null;
+
+		if (type == SpeechActType.SAT_INFORMATIVE) {
+
+			newPercept = new Inform(sender, receiver.getName(), atom);
+		}
+
+		if (type == SpeechActType.SAT_REQUESTING) {
+
+			newPercept = new Query(sender, receiver.getName(), atom);
+		}
+
+		if (newPercept == null) {
+
+			LOG.error("Ошибка при отправке перцепта");
+		}
+
+		sendAction((Action)newPercept);
+	}
+
+	/**
+	 * Отправка перцепта
+	 * @param senderName имя агента-отправителя
+	 * @param receiverName имя агента-получателя
+	 * @param atom атом логики
+	 * @param type тип перцепта, либо Inform (INFORMATIVE), либо Query (REQUESTING)
+	 * @author Ilya Gutnikov
+	 */
+	public void sendPerception(String senderName, String receiverName, FOLAtom atom, SpeechActType type) {
+
+		Agent agentSender = getAgentByName(senderName);
+		Agent agentReceiver = getAgentByName(receiverName);
+
+		sendPerception(agentSender, agentReceiver, atom, type);
+	}
+
+	/**
+	 * Отправка перцепта
+	 * @param senderName имя агента-отправителя
+	 * @param receiverName имя агента-получателя
+	 * @param atomStr атом логики в виде строки
+	 * @param type тип перцепта, либо Inform (INFORMATIVE), либо Query (REQUESTING)
+	 * @author Ilya Gutnikov
+	 */
+	public void sendPerception(String senderName, String receiverName, String atomStr, SpeechActType type) {
+
+		Agent agentSender = getAgentByName(senderName);
+		Agent agentReceiver = getAgentByName(receiverName);
+		FOLAtom atom = new FOLAtom(new Predicate(atomStr));
+
+		sendPerception(agentSender, agentReceiver, atom, type);
+	}
+
+	/**
+	 * Отправка перцепта
+	 * @param sender агент-отправитель
+	 * @param receiver агент-получатель
+	 * @param atom атом логики в виде строки
+	 * @param type тип перцепта, либо Inform (INFORMATIVE), либо Query (REQUESTING)
+	 * @author Ilya Gutnikov
+	 */
+	public void sendPerception(Agent sender, Agent receiver, String atomStr, SpeechActType type) {
+
+		FOLAtom atom = new FOLAtom(new Predicate(atomStr));
+
+		sendPerception(sender, receiver, atom, type);
 	}
 
 	/**
