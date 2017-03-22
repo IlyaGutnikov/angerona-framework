@@ -16,9 +16,11 @@ import com.github.angerona.fw.util.ModelAdapter;
 
 import ru.ilyagutnikov.magisterwork.AdditionalData;
 import ru.ilyagutnikov.magisterwork.gui.AgentActionsHelper;
+import ru.ilyagutnikov.magisterwork.gui.SHAgentsGUI;
 
 /**
  * Implements the SimulatonControlModel
+ *
  * @author Tim Janus
  */
 public class SimulationControlModelAdapter extends ModelAdapter implements SimulationControlModel {
@@ -36,13 +38,19 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 	/** the AngeroneEnvironment representing the dynamic simulation */
 	private AngeronaEnvironment environment = AngeronaEnvironment.getInstance();
 	private AgentActionsHelper helper = new AgentActionsHelper();
+	private SHAgentsGUI shAgents = SHAgentsGUI.getInstance();
 
-	/** generate a thread pool using one thread (the worker thread for the simulation) */
+	/**
+	 * generate a thread pool using one thread (the worker thread for the
+	 * simulation)
+	 */
 	private final ExecutorService pool = Executors.newFixedThreadPool(1);
 
 	/**
 	 * Helper method: sets the SimulationState and fires the PropertyChangeEvent
-	 * @param newState	The new SimulationState
+	 *
+	 * @param newState
+	 *            The new SimulationState
 	 */
 	private synchronized void setSimulationState(SimulationState newState) {
 		simulationState = changeProperty("simulationState", simulationState, newState);
@@ -57,13 +65,12 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 
 		LOG.info(AdditionalData.DEBUG_MARKER, "Установка конфигурации симуляции. Конфигруация: " + config.getName());
 
-		if(simulationConfig != null) {
-			if(	simulationState == SimulationState.SS_INITALIZED ||
-				simulationState == SimulationState.SS_FINISHED) {
+		if (simulationConfig != null) {
+			if (simulationState == SimulationState.SS_INITALIZED || simulationState == SimulationState.SS_FINISHED) {
 				pool.execute(new Runnable() {
 					@Override
 					public void run() {
-						synchronized(environment) {
+						synchronized (environment) {
 							environment.cleanupEnvironment();
 						}
 					}
@@ -71,7 +78,7 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 			}
 		}
 		simulationConfig = changeProperty("simulationConfig", simulationConfig, config);
-		if(simulationConfig != null) {
+		if (simulationConfig != null) {
 			setSimulationState(SimulationState.SS_LOADED);
 		} else {
 			setSimulationState(SimulationState.SS_UNDEFINED);
@@ -83,40 +90,48 @@ public class SimulationControlModelAdapter extends ModelAdapter implements Simul
 
 		LOG.info(AdditionalData.DEBUG_MARKER, "Инициализация симуляции");
 
-		if(simulationState == SimulationState.SS_LOADED) {
+
+
+		if (simulationState == SimulationState.SS_LOADED) {
 			pool.execute(new Runnable() {
 				@Override
 				public void run() {
-					synchronized(environment) {
-						if(environment.initSimulation(simulationConfig)) {
+					synchronized (environment) {
+						if (environment.initSimulation(simulationConfig)) {
 							setSimulationState(SimulationState.SS_INITALIZED);
 							setSimulationTick(simulationTick);
-
-							AngeronaWindow.get().getAgentsActionsMenu().setEnabled(true);
-							AngeronaWindow.get().getEnvActionsMenu().setEnabled(true);
-
-							AngeronaWindow.get().getAgentsActionsMenu().removeAll();
-							for (JMenu menu : helper.createMenuForAgents()) {
-
-								AngeronaWindow.get().getAgentsActionsMenu().add(menu);
-							}
 						}
 					}
 				}
 			});
 		}
+
+		if (simulationConfig.getCategory().equals("SHAgents")) {
+			AngeronaWindow.get().getMenuBar().add(SHAgentsGUI.getInstance().createSubMenu());
+		} else {
+
+			AngeronaWindow.get().getAgentsActionsMenu().setEnabled(true);
+			AngeronaWindow.get().getEnvActionsMenu().setEnabled(true);
+
+			AngeronaWindow.get().getAgentsActionsMenu().removeAll();
+			for (JMenu menu : helper.createMenuForAgents()) {
+
+				AngeronaWindow.get().getAgentsActionsMenu().add(menu);
+			}
+		}
+
 		return simulationState;
 	}
 
 	@Override
 	public SimulationState runSimulation() {
 		LOG.info(AdditionalData.DEBUG_MARKER, "Запуск симуляции");
-		if(simulationState == SimulationState.SS_INITALIZED) {
+		if (simulationState == SimulationState.SS_INITALIZED) {
 			pool.execute(new Runnable() {
 				@Override
 				public void run() {
-					synchronized(environment) {
-						if(!environment.runOneTick()) {
+					synchronized (environment) {
+						if (!environment.runOneTick()) {
 							setSimulationState(SimulationState.SS_FINISHED);
 							AngeronaWindow.get().getAgentsActionsMenu().setEnabled(false);
 							AngeronaWindow.get().getEnvActionsMenu().setEnabled(false);
