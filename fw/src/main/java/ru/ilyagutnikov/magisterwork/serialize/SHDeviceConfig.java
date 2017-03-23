@@ -6,4 +6,7 @@ public interface SHDeviceConfig extends Resource {
 
 	SHDeviceType getDeviceType();
 
+	String getDeviceId();
+
+	void setDeviceId(String deviceId);
 }

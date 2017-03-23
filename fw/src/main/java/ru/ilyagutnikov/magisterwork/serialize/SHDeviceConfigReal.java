@@ -31,6 +31,9 @@ public class SHDeviceConfigReal implements SHDeviceConfig {
 	@Element(name="description", required=false)
 	protected String description = "";
 
+	@Element(name="deviceId", required=false)
+	protected String deviceId = "";
+
 	@Override
 	public String getName() {
 
@@ -63,6 +66,19 @@ public class SHDeviceConfigReal implements SHDeviceConfig {
 
 	public static SHDeviceConfigReal loadXml(File source) {
 		return SerializeHelper.get().loadXmlTry(SHDeviceConfigReal.class, source);
+	}
+
+	@Override
+	public String getDeviceId() {
+
+		return deviceId;
+	}
+
+	@Override
+	public void setDeviceId(String deviceId) {
+
+		this.deviceId = deviceId;
+
 	}
 
 }

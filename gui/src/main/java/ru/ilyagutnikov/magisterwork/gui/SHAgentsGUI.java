@@ -18,6 +18,7 @@ import com.github.angerona.fw.gui.AngeronaWindow;
 import com.github.angerona.fw.serialize.SimulationConfiguration;
 
 import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfigReal;
+import ru.ilyagutnikov.magisterwork.zigbee.ZigbeeHelper;
 
 /**
  *
@@ -98,8 +99,15 @@ public class SHAgentsGUI {
 
 		int reval = fileDialog.showOpenDialog(null);
 		if (reval == JFileChooser.APPROVE_OPTION) {
+
 			File file = fileDialog.getSelectedFile();
 			SHDeviceConfigReal device = SHDeviceConfigReal.loadXml(file);
+
+			if (device.getDeviceId().isEmpty()) {
+
+				device.setDeviceId(ZigbeeHelper.getRandomHexString());
+			}
+
 			addDeviceToRealWorldDevicesList(device);
 
 			//TODO отправить агенту умного дома
@@ -113,7 +121,7 @@ public class SHAgentsGUI {
 	 */
 	private void addDeviceToRealWorldDevicesList(SHDeviceConfigReal device) {
 
-		shDevicesMenu.add(new JMenuItem(device.getName()));
+		shDevicesMenu.add(new JMenuItem(device.getName() + "@" + device.getDeviceId()));
 	}
 
 }
