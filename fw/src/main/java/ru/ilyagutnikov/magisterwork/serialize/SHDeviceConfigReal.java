@@ -64,10 +64,6 @@ public class SHDeviceConfigReal implements SHDeviceConfig {
 		return SHDeviceType.valueOf(deviceType);
 	}
 
-	public static SHDeviceConfigReal loadXml(File source) {
-		return SerializeHelper.get().loadXmlTry(SHDeviceConfigReal.class, source);
-	}
-
 	@Override
 	public String getDeviceId() {
 

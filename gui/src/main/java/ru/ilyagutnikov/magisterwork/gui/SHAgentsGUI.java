@@ -17,6 +17,7 @@ import com.github.angerona.fw.AngeronaEnvironment;
 import com.github.angerona.fw.gui.AngeronaWindow;
 import com.github.angerona.fw.serialize.SimulationConfiguration;
 
+import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfig;
 import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfigReal;
 import ru.ilyagutnikov.magisterwork.zigbee.ZigbeeHelper;
 
@@ -101,7 +102,7 @@ public class SHAgentsGUI {
 		if (reval == JFileChooser.APPROVE_OPTION) {
 
 			File file = fileDialog.getSelectedFile();
-			SHDeviceConfigReal device = SHDeviceConfigReal.loadXml(file);
+			SHDeviceConfig device = SHDeviceConfig.loadXml(file);
 
 			if (device.getDeviceId().isEmpty()) {
 
@@ -119,7 +120,7 @@ public class SHAgentsGUI {
 	 * @param device
 	 * @author Ilya Gutnikov
 	 */
-	private void addDeviceToRealWorldDevicesList(SHDeviceConfigReal device) {
+	private void addDeviceToRealWorldDevicesList(SHDeviceConfig device) {
 
 		shDevicesMenu.add(new JMenuItem(device.getName() + "@" + device.getDeviceId()));
 	}
