@@ -2,9 +2,9 @@ package ru.ilyagutnikov.magisterwork.operators;
 
 import com.github.angerona.fw.am.secrecy.operators.parameter.GenerateOptionsParameter;
 
-import ru.ilyagutnikov.magisterwork.secrecy.operators.BaseSmartHomeOperator;
+import ru.ilyagutnikov.magisterwork.secrecy.operators.BaseSmartHomeUpdateOperator;
 
-public class SmartHomeOperator extends BaseSmartHomeOperator {
+public class SmartHomeUpdateOperator extends BaseSmartHomeUpdateOperator {
 
 	@Override
 	protected Boolean processImpl(GenerateOptionsParameter preprocessedParameters) {

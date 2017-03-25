@@ -2,13 +2,13 @@
 	<name>Default Agent Implementation</name>
 	<cycle-script source="config/sh_secrecy_cycle.xml" />
 
-	<operation-set operation-type="SmartHomeUpdate">
-		<default-operator-cls>ru.ilyagutnikov.magisterwork.operators.SmartHomeOperator</default-operator-cls>
-	</operation-set>
-
 	<operation-set operation-type="GenerateOptions">
       <default-operator-cls>com.github.angerona.fw.example.operators.GenerateOptionsOperator</default-operator-cls>
    	</operation-set>
+
+   	<operation-set operation-type="SmartHomeUpdate">
+		<default-operator-cls>ru.ilyagutnikov.magisterwork.operators.SmartHomeUpdateOperator</default-operator-cls>
+	</operation-set>
 
 	<operation-set operation-type="IntentionUpdate">
       <default-operator-cls>com.github.angerona.fw.example.operators.IntentionUpdateOperator</default-operator-cls>

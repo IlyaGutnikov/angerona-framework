@@ -219,11 +219,14 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 
 		// load cycle script and link supported operators
 		asmlCylce = ai.getConfig().getCycleScript();
+
+		AgentConfig test = ai.getConfig();
+
 		for (OperationSetConfig osc : ai.getConfig().getOperations()) {
 			try{
 				operators.addOperationSet(osc);
 
-				LOG.info(AdditionalData.DEBUG_MARKER, "В агента '{}' добавлены операторы '{}'", getName(), osc.getClass().getSimpleName());
+				LOG.info(AdditionalData.DEBUG_MARKER, "В агента '{}' добавлены операторы '{}'", getName(), osc.getOperatorClassNames());
 
 			} catch (Exception e) {
 				throw new AgentInstantiationException(
