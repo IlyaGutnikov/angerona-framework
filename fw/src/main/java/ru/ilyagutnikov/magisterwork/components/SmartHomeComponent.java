@@ -4,10 +4,17 @@ import com.github.angerona.fw.BaseAgentComponent;
 
 public class SmartHomeComponent extends BaseAgentComponent {
 
+	public SmartHomeComponent() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public SmartHomeComponent(SmartHomeComponent other) {
+		super(other);
+	}
+
 	@Override
-	public BaseAgentComponent clone() {
-		// TODO Auto-generated method stub
-		return null;
+	public SmartHomeComponent clone() {
+		return new SmartHomeComponent(this);
 	}
 
 }

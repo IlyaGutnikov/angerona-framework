@@ -31,4 +31,5 @@
 	<component>com.github.angerona.fw.am.secrecy.components.SecrecyKnowledge</component>
     <component>com.github.angerona.fw.PlanComponent</component>
     <component>com.github.angerona.fw.ActionHistory</component>
+    <component>ru.ilyagutnikov.magisterwork.components.SmartHomeComponent</component>
 </agent-configuration>

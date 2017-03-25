@@ -6,6 +6,7 @@ import java.util.List;
 import net.sf.tweety.logics.fol.syntax.FOLAtom;
 import net.sf.tweety.logics.fol.syntax.FolFormula;
 import net.xeoh.plugins.base.annotations.PluginImplementation;
+import ru.ilyagutnikov.magisterwork.components.SmartHomeComponent;
 
 import com.github.angerona.fw.ActionHistory;
 import com.github.angerona.fw.AgentComponent;
@@ -29,7 +30,7 @@ import com.github.angerona.fw.serialize.transform.VariableTransform;
 /**
  * The default agent plug-in for the Angerona framework defines
  * the confidential Knowledge and is part of the main framework.
- *  
+ *
  * @author Tim Janus
  */
 @PluginImplementation
@@ -41,7 +42,7 @@ public class FrameworkPlugin extends AngeronaPluginAdapter {
 			return FolFormulaVariable.class;
 		}
 	}
-	
+
 	@Override
 	public void onLoading() {
 		addTransformMapping(FolFormula.class, FolFormulaTransform.class);
@@ -51,7 +52,7 @@ public class FrameworkPlugin extends AngeronaPluginAdapter {
 		addTransformMapping(BooleanExpression.class, ConditionTransform.class);
 		addTransformMapping(Condition.class, ConditionTransform.class);
 	}
-	
+
 	@Override
 	public List<Class<? extends AgentComponent>> getAgentComponentImpl() {
 		List<Class<? extends AgentComponent>> reval = new LinkedList<Class<? extends AgentComponent>>();
@@ -59,16 +60,20 @@ public class FrameworkPlugin extends AngeronaPluginAdapter {
 		reval.add(Desires.class);
 		reval.add(ScriptingComponent.class);
 		reval.add(ActionHistory.class);
+
+		//!!!!
+		reval.add(SmartHomeComponent.class);
+
 		return reval;
 	}
-	
+
 	@Override
 	public List<Class<? extends EnvironmentBehavior>> getEnvironmentBehaviors() {
 		List<Class<? extends EnvironmentBehavior>> reval = new LinkedList<>();
 		reval.add(DefaultBehavior.class);
 		return reval;
 	}
-	
+
 	@Override
 	public List<Class<? extends ContinuousBeliefOperatorFamilyIteratorStrategy>> getBeliefOperatorFamilyIteratorStrategies() {
 		List<Class<? extends ContinuousBeliefOperatorFamilyIteratorStrategy>> reval = new LinkedList<>();
