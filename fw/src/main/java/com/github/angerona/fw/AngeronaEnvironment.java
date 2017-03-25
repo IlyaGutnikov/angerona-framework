@@ -1,7 +1,5 @@
 package com.github.angerona.fw;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.util.Collection;

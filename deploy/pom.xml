@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <parent>
     <groupId>com.github.angerona</groupId>
     <artifactId>maven-build-all</artifactId>
     <version>1.0.1-SNAPSHOT</version>
   </parent>
-  
+
   <artifactId>distribution</artifactId>
 
   <packaging>pom</packaging>
 
   <name>Distribution</name>
-  
+
   <build>
     <plugins>
        <!-- The configuration of maven-assembly-plugin -->
@@ -27,7 +27,7 @@
                         <descriptor>src/assemble/angerona-zip.xml</descriptor>
                     </descriptors>
                 </configuration>
-                
+
                 <executions>
                 	<execution>
                 	  <phase>package</phase>
@@ -37,13 +37,13 @@
                 	</execution>
                 </executions>
             </plugin>
-           
+
     </plugins>
   </build>
-  
-   <!-- 
-   		NOTE: These dependency declarations are only required to sort this project to the 
-      	end of the line in the multimodule build. 
+
+   <!--
+   		NOTE: These dependency declarations are only required to sort this project to the
+      	end of the line in the multimodule build.
    !-->
    <dependencies>
    	<dependency>
