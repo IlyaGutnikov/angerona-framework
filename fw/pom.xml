@@ -81,6 +81,12 @@
 	 	<artifactId>nlp</artifactId>
 	 	<version>1.0.358</version>
 	 </dependency>
+	 <!-- https://mvnrepository.com/artifact/net.sourceforge.owlapi/owlapi-distribution -->
+	<dependency>
+    	<groupId>net.sourceforge.owlapi</groupId>
+    	<artifactId>owlapi-distribution</artifactId>
+    	<version>5.0.5</version>
+	</dependency>
   </dependencies>
   <parent>
   	<groupId>com.github.angerona</groupId>

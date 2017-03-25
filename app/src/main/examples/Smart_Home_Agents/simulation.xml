@@ -16,7 +16,7 @@
 
 	<agent-instance>
 		<name>SmartHome</name>
-        <agent-config source="config/agents/sh_agent.xml" />
+        <agent-config source="config/agents/smarthome_agent.xml" />
         <beliefbase-config source="config/beliefbases/sh_beliefbase.xml" />
 	</agent-instance>
 

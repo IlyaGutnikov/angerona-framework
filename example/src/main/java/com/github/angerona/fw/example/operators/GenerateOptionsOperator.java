@@ -30,23 +30,23 @@ public class GenerateOptionsOperator extends BaseGenerateOptionsOperator {
 
 	/** reference to the logback instance used for logging */
 	private static Logger LOG = LoggerFactory.getLogger(GenerateOptionsOperator.class);
-	
+
 	public static final Predicate prepareQueryProcessing = new Predicate("queryProcessing", 1);
-	
+
 	public static final Predicate prepareRevisionRequestProcessing = new Predicate("revisionRequestProcessing", 1);
-	
+
 	public static final Predicate prepareReasonCalculation = new Predicate("reasonProcessing", 1);
-	
+
 	public static final Predicate prepareScriptingProcessing = new Predicate("scriptingProcessing", 0);
-	
+
 	public static final Predicate prepareJustificationReaction = new Predicate("justificationProcessing", 1);
-	
+
 	public static final IdGenerator desireIds = new IdGenerator();
-	
+
 	@Override
 	protected Integer processImpl(GenerateOptionsParameter param) {
 		LOG.info("Run Default-Generate-Options-operator");
-		
+
 		FOLAtom ad = null;
 		Set<Desire> reval = new HashSet<Desire>();
 		if(param.getPerception() instanceof Query) {
