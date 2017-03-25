@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.angerona.fw.AngeronaEnvironment;
+import com.github.angerona.fw.comm.SpeechAct.SpeechActType;
 import com.github.angerona.fw.gui.AngeronaWindow;
 import com.github.angerona.fw.serialize.SimulationConfiguration;
 
@@ -111,7 +112,8 @@ public class SHAgentsGUI {
 
 			addDeviceToRealWorldDevicesList(device);
 
-			//TODO отправить агенту умного дома
+			AngeronaEnvironment.getInstance().sendPerception("RealWorld", "SmartHome",
+					ZigbeeHelper.getFOLAtomByDevice(device), SpeechActType.SAT_INFORMATIVE);
 		}
 	}
 

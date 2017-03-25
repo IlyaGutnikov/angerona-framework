@@ -77,4 +77,18 @@ public class SHDeviceConfigReal implements SHDeviceConfig {
 
 	}
 
+	@Override
+	public String toString() {
+
+		String returnStr = "";
+		returnStr += "<shdevice-configuration>";
+		returnStr += "<name>"+ getName() +"</name>";
+		returnStr += "<device-type>"+ getDeviceType().toString() +"</device-type>";
+		returnStr += "<category>"+ getCategory() +"</category>";
+		returnStr += "<description>"+ getDescription() +"</description>";
+		returnStr += "</shdevice-configuration>";
+
+		return returnStr;
+	}
+
 }

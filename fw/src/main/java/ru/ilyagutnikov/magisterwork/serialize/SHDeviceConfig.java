@@ -16,4 +16,9 @@ public interface SHDeviceConfig extends Resource {
 	static SHDeviceConfigReal loadXml(File source) {
 		return SerializeHelper.get().loadXmlTry(SHDeviceConfigReal.class, source);
 	}
+
+	static SHDeviceConfigReal loadString(String xml) {
+
+		return SerializeHelper.get().loadXmlTry(SHDeviceConfigReal.class, xml);
+	}
 }

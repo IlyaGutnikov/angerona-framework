@@ -40,11 +40,10 @@ public class ZigbeeHelper {
 	 */
 	public static FOLAtom getFOLAtomByDevice(SHDeviceConfig shDevice) {
 
-		Predicate addDevicePredicate = new Predicate("addDevice");
+		Predicate addDevicePredicate = new Predicate("addDevice" + shDevice.toString());
 
-		ArrayList<SHVariable> terms = new ArrayList<SHVariable>();
-		terms.add(new SHVariable(shDevice));
+		FOLAtom atom = new FOLAtom(addDevicePredicate);
 
-		return new FOLAtom(addDevicePredicate, terms);
+		return atom;
 	}
 }
