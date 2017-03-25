@@ -9,7 +9,7 @@ import com.github.angerona.fw.util.Pair;
 public abstract class BaseSmartHomeOperator extends
 Operator<Agent, GenerateOptionsParameter, Boolean> {
 
-	public static final String OPERATION_TYPE = "SmartHomeOperator";
+	public static final String OPERATION_TYPE = "SmartHomeUpdate";
 
 	@Override
 	public Pair<String, Class<?>> getOperationType() {

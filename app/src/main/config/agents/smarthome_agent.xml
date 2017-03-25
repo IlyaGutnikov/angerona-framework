@@ -2,7 +2,7 @@
 	<name>Default Agent Implementation</name>
 	<cycle-script source="config/sh_secrecy_cycle.xml" />
 
-	<operation-set operation-type="SmartHomeOperator">
+	<operation-set operation-type="SmartHomeUpdate">
 		<default-operator-cls>ru.ilyagutnikov.magisterwork.operators.SmartHomeOperator</default-operator-cls>
 	</operation-set>
 

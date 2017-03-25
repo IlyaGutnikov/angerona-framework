@@ -4,7 +4,7 @@
         <param name="beliefs" value="$beliefs" />
     </operation>
 
-    <operation type="SmartHomeOperator">
+    <operation type="SmartHomeUpdate">
 	    <param name="perception" value="$perception" />
 	    <output>isCmdExecute</output>
 	</operation>
