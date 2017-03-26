@@ -16,8 +16,14 @@ import org.slf4j.LoggerFactory;
 import com.github.angerona.fw.AngeronaEnvironment;
 import com.github.angerona.fw.comm.SpeechAct.SpeechActType;
 import com.github.angerona.fw.gui.AngeronaWindow;
+import com.github.angerona.fw.reflection.FolFormulaVariable;
 import com.github.angerona.fw.serialize.SimulationConfiguration;
 
+import net.sf.tweety.logics.commons.syntax.Constant;
+import net.sf.tweety.logics.commons.syntax.Predicate;
+import net.sf.tweety.logics.commons.syntax.Variable;
+import net.sf.tweety.logics.fol.syntax.FOLAtom;
+import net.sf.tweety.logics.fol.syntax.FolFormula;
 import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfig;
 import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfigReal;
 import ru.ilyagutnikov.magisterwork.zigbee.ZigbeeHelper;
@@ -112,8 +118,13 @@ public class SHAgentsGUI {
 
 			addDeviceToRealWorldDevicesList(device);
 
+			Constant deviceConst = new Constant("device");
+			deviceConst.set(device.toString());
+
+			FOLAtom addDeviceAtom = new FOLAtom(new Predicate("addDevice", 1), deviceConst);
+
 			AngeronaEnvironment.getInstance().sendPerception("RealWorld", "SmartHome",
-					ZigbeeHelper.getFOLAtomByDevice(device), SpeechActType.SAT_INFORMATIVE);
+					addDeviceAtom, SpeechActType.SAT_INFORMATIVE);
 		}
 	}
 

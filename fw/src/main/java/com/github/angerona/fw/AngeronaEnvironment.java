@@ -455,37 +455,6 @@ public class AngeronaEnvironment  {
 		sendPerception(agentSender, agentReceiver, atom, type);
 	}
 
-	/**
-	 * Отправка перцепта
-	 * @param senderName имя агента-отправителя
-	 * @param receiverName имя агента-получателя
-	 * @param atomStr атом логики в виде строки
-	 * @param type тип перцепта, либо Inform (INFORMATIVE), либо Query (REQUESTING)
-	 * @author Ilya Gutnikov
-	 */
-	public void sendPerception(String senderName, String receiverName, String atomStr, SpeechActType type) {
-
-		Agent agentSender = getAgentByName(senderName);
-		Agent agentReceiver = getAgentByName(receiverName);
-		FOLAtom atom = new FOLAtom(new Predicate(atomStr));
-
-		sendPerception(agentSender, agentReceiver, atom, type);
-	}
-
-	/**
-	 * Отправка перцепта
-	 * @param sender агент-отправитель
-	 * @param receiver агент-получатель
-	 * @param atom атом логики в виде строки
-	 * @param type тип перцепта, либо Inform (INFORMATIVE), либо Query (REQUESTING)
-	 * @author Ilya Gutnikov
-	 */
-	public void sendPerception(Agent sender, Agent receiver, String atomStr, SpeechActType type) {
-
-		FOLAtom atom = new FOLAtom(new Predicate(atomStr));
-
-		sendPerception(sender, receiver, atom, type);
-	}
 
 	/**
 	 * Create the agents defined in the simulation configuration. That means it
