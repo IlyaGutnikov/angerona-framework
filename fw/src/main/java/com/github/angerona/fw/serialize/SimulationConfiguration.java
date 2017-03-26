@@ -16,13 +16,15 @@ import org.simpleframework.xml.core.Validate;
 
 import com.github.angerona.fw.Perception;
 
+import ru.ilyagutnikov.magisterwork.serialize.SHAgentsSimulationConfig;
+
 /**
  * Class instance holding all the configuration options for a complete simulation.
  *
  * @author Tim Janus
  */
 @Root(name="simulation-configuration")
-public class SimulationConfiguration implements Resource {
+public class SimulationConfiguration implements Resource, SHAgentsSimulationConfig {
 	public static final String RESOURCE_TYPE = "Simulation-Template";
 
 	/** name of the simulation */
@@ -151,12 +153,7 @@ public class SimulationConfiguration implements Resource {
 		return RESOURCE_TYPE;
 	}
 
-	/**
-	 * Возвращает тип цикла, если true - цикл бесконечный
-	 * @return infiniteCycle
-	 * @author Ilya Gutnikov
-	 */
-	public boolean isInfiniteCycle() {
+	public boolean getIsInfiniteCycle() {
 
 		return infiniteCycle;
 	}

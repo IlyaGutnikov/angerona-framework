@@ -13,6 +13,8 @@ import org.simpleframework.xml.core.Validate;
 
 import com.github.angerona.fw.asml.CommandSequence;
 
+import ru.ilyagutnikov.magisterwork.serialize.SHAgentConfig;
+
 
 /**
  * Contains the dynamic configurations of an agent saved in the agent
@@ -44,6 +46,12 @@ public class AgentConfigReal implements AgentConfig {
 
 	@Element(name="category", required=false)
 	protected String category = "";
+
+	/**
+	 * Путь к онтологии
+	 */
+	@Element(name="ontology", required=false)
+	protected String pathToOWL = "";
 
 	@Override
 	public List<OperationSetConfig> getOperations() {
@@ -94,5 +102,11 @@ public class AgentConfigReal implements AgentConfig {
 	@Override
 	public String getCategory() {
 		return category;
+	}
+
+	@Override
+	public File getOWLFile() {
+
+		return new File(pathToOWL);
 	}
 }

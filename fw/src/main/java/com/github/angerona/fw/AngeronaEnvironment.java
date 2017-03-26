@@ -1,5 +1,6 @@
 package com.github.angerona.fw;
 
+import java.io.File;
 import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -253,7 +254,7 @@ public class AngeronaEnvironment  {
 		Angerona.getInstance().onTickDone(this);
 
 		//новое поле в конфигурации - бесконечные тики
-		if (config.isInfiniteCycle()) {
+		if (config.getIsInfiniteCycle()) {
 
 			setInfiniteTicksInEnvinronment(true);
 		}

@@ -12,9 +12,9 @@ import com.github.angerona.fw.asml.CommandSequence;
 /**
  * An implementation of the agent configuration file as a reference to another file.
  * It uses the following form:
- * 
+ *
  *     <agent-config source="filename.xml" />
- * 
+ *
  * It is used by simple xml internally to load the
  * agent configuration file.
  * @author Tim Janus
@@ -33,7 +33,7 @@ public class AgentConfigImport implements AgentConfig {
 	public String getName() {
 		throw new IllegalStateException("Method not supported.");
 	}
-	
+
 	@Override
 	public List<String> getComponents() {
 		throw new IllegalStateException("Method not supported.");
@@ -61,6 +61,11 @@ public class AgentConfigImport implements AgentConfig {
 
 	@Override
 	public String getCategory() {
+		throw new IllegalStateException("Method not supported.");
+	}
+
+	@Override
+	public File getOWLFile() {
 		throw new IllegalStateException("Method not supported.");
 	}
 }

@@ -18,6 +18,7 @@ import java.util.Stack;
 
 import net.sf.tweety.logics.fol.syntax.FolFormula;
 import ru.ilyagutnikov.magisterwork.AdditionalData;
+import ru.ilyagutnikov.magisterwork.components.SmartHomeComponent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,8 +221,6 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 		// load cycle script and link supported operators
 		asmlCylce = ai.getConfig().getCycleScript();
 
-		AgentConfig test = ai.getConfig();
-
 		for (OperationSetConfig osc : ai.getConfig().getOperations()) {
 			try{
 				operators.addOperationSet(osc);
@@ -259,6 +258,7 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 			LOG.info(AdditionalData.DEBUG_MARKER, "Текущие желания '{}'", desires.getDesires());
 		}
 
+
 		// init the custom components
 		for (AgentComponent ac : beliefs.getComponents()) {
 			LOG.info(AdditionalData.DEBUG_MARKER, "Инициализация дополнительных компонентов '{}'", ac.getClass().getName());
@@ -269,6 +269,14 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 				}
 			}
 		}
+
+		//Инициализирую свой компонент Умного Дома
+		SmartHomeComponent SHComp = getComponent(SmartHomeComponent.class);
+		if (SHComp != null) {
+
+			SHComp.setOWLFile(ai.getConfig().getOWLFile());
+		}
+
 	}
 
 	/**
