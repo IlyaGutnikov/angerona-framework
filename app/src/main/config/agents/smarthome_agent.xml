@@ -32,4 +32,7 @@
     <component>com.github.angerona.fw.PlanComponent</component>
     <component>com.github.angerona.fw.ActionHistory</component>
     <component>ru.ilyagutnikov.magisterwork.components.SmartHomeComponent</component>
+
+	<ontology>/Users/ilyagutnikov/Git/angerona-framework/app/src/main/config/owl/dogont.owl</ontology>
+
 </agent-configuration>

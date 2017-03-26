@@ -274,6 +274,8 @@ public class Agent implements ContextProvider, Entity, OperatorStack,
 		SmartHomeComponent SHComp = getComponent(SmartHomeComponent.class);
 		if (SHComp != null) {
 
+			LOG.info(AdditionalData.DEBUG_MARKER, "Добавлена онтология " + ai.getConfig().getOWLFile().getAbsolutePath() + " в агента " + ai.getName());
+
 			SHComp.setOWLFile(ai.getConfig().getOWLFile());
 		}
 
