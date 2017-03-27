@@ -1,5 +1,6 @@
 package ru.ilyagutnikov.magisterwork.operators;
 
+import java.util.List;
 import java.util.Set;
 
 import com.github.angerona.fw.Agent;
@@ -12,6 +13,7 @@ import net.sf.tweety.logics.fol.syntax.FolFormula;
 import ru.ilyagutnikov.magisterwork.components.SmartHomeComponent;
 import ru.ilyagutnikov.magisterwork.secrecy.operators.BaseSmartHomeUpdateOperator;
 import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfig;
+import ru.ilyagutnikov.magisterwork.zigbee.SHVariable;
 
 public class SmartHomeUpdateOperator extends BaseSmartHomeUpdateOperator {
 
@@ -65,6 +67,29 @@ public class SmartHomeUpdateOperator extends BaseSmartHomeUpdateOperator {
 	}
 
 	/**
+	 *
+	 * @param command
+	 * @param subCommands
+	 * @return
+	 * @author Ilya Gutnikov
+	 */
+	private boolean executeCommand(String command, List<String> subCommands) {
+
+		return false;
+	}
+
+	/**
+	 *
+	 * @param command
+	 * @return
+	 * @author Ilya Gutnikov
+	 */
+	private boolean executeCommand(String command) {
+
+		return false;
+	}
+
+	/**
 	 * Получает команду из перцепта
 	 * @param percept перцепт
 	 * @return Имя предиката-команды
@@ -86,9 +111,8 @@ public class SmartHomeUpdateOperator extends BaseSmartHomeUpdateOperator {
 	private SHDeviceConfig getDeviceFromPercept(FolFormula percept) {
 
 		FOLAtom firstAtom = percept.getAtoms().iterator().next();
-		Constant deviceConst = (Constant) firstAtom.getArguments().get(0);
-		SHDeviceConfig device = SHDeviceConfig.loadString(deviceConst.get());
+		SHVariable deviceVariable = (SHVariable) firstAtom.getArguments().get(0);
 
-		return device;
+		return deviceVariable.get();
 	}
 }
