@@ -1,29 +1,32 @@
 package ru.ilyagutnikov.magisterwork.zigbee;
 
-import net.sf.tweety.logics.commons.syntax.StringTerm;
-import net.sf.tweety.logics.commons.syntax.TermAdapter;
+import net.sf.tweety.logics.commons.syntax.Sort;
 
-public class SHVariable extends StringTerm {
+import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfig;
 
-	public SHVariable(String value) {
-		super(value);
-		// TODO Auto-generated constructor stub
+public class SHVariable extends SHDeviceTerm {
+
+	public SHVariable(SHDeviceConfig device){
+		this(device,Sort.THING);
 	}
 
-	public SHVariable(SHVariable shVariable) {
-		super(shVariable);
+	public SHVariable(SHDeviceConfig device, Sort sort){
+		super(device, sort);
+	}
+
+	public SHVariable(SHVariable other) {
+		super(other);
 	}
 
 	@Override
-	public void set(String value) {
+	public void set(SHDeviceConfig value) {
+
 		this.value = value;
 
 	}
 
 	@Override
 	public SHVariable clone() {
-		// TODO Auto-generated method stub
 		return new SHVariable(this);
 	}
-
 }

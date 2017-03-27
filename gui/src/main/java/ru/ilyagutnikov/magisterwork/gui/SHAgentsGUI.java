@@ -26,6 +26,7 @@ import net.sf.tweety.logics.fol.syntax.FOLAtom;
 import net.sf.tweety.logics.fol.syntax.FolFormula;
 import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfig;
 import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfigReal;
+import ru.ilyagutnikov.magisterwork.zigbee.SHVariable;
 import ru.ilyagutnikov.magisterwork.zigbee.ZigbeeHelper;
 
 /**
@@ -118,10 +119,7 @@ public class SHAgentsGUI {
 
 			addDeviceToRealWorldDevicesList(device);
 
-			Constant deviceConst = new Constant("device");
-			deviceConst.set(device.toString());
-			//TODO сделать свой предикат
-			FOLAtom addDeviceAtom = new FOLAtom(new Predicate("addDevice", 1), deviceConst);
+			FOLAtom addDeviceAtom = new FOLAtom(new Predicate("addDevice", 1), new SHVariable(device));
 
 			AngeronaEnvironment.getInstance().sendPerception("RealWorld", "SmartHome",
 					addDeviceAtom, SpeechActType.SAT_INFORMATIVE);
