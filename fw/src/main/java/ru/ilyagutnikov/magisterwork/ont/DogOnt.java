@@ -1,4 +1,4 @@
-package ru.ilyagutnikov.magisterwork.dogont;
+package ru.ilyagutnikov.magisterwork.ont;
 
 import org.semanticweb.owlapi.model.PrefixManager;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
@@ -23,7 +23,9 @@ public class DogOnt {
 
 	public enum ObjectProperties {
 
-		hasFunctionality
+		hasFunctionality,
+		hasState,
+		hasStateValue
 	}
 
 
