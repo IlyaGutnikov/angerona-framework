@@ -34,6 +34,7 @@ import ru.ilyagutnikov.magisterwork.ont.DogOnt;
 import ru.ilyagutnikov.magisterwork.ont.DogOnt.*;
 import ru.ilyagutnikov.magisterwork.serialize.SHAgentConfig;
 import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfig;
+import ru.ilyagutnikov.magisterwork.serialize.SHDeviceType;
 
 public class SmartHomeComponent extends BaseAgentComponent {
 
@@ -83,7 +84,10 @@ public class SmartHomeComponent extends BaseAgentComponent {
 	 */
 	public boolean addDeviceToOWL(SHDeviceConfig device) {
 
+		if (device.getDeviceType().equals(SHDeviceType.SH_Light)) {
 
+			return createSimpleLamp(device);
+		}
 
 		return false;
 	}
@@ -94,7 +98,7 @@ public class SmartHomeComponent extends BaseAgentComponent {
 	 * ============================================
 	 */
 
-	private boolean createSimpleLamp(SHAgentConfig device) {
+	private boolean createSimpleLamp(SHDeviceConfig device) {
 
 
 
