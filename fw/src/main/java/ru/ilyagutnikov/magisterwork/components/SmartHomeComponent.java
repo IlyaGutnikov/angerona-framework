@@ -10,6 +10,7 @@ import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
@@ -100,9 +101,20 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 	private boolean createSimpleLamp(SHDeviceConfig device) {
 
+		boolean result = false;
 
+		OWLNamedIndividual simpleLamp = createIndvidualByOWLClass(device.getName(), Entities.SimpleLamp);
+		OWLNamedIndividual onOffFunc = createIndvidualByOWLClass(Entities.OnOffFunctionality.toString() + device.getName(), Entities.OnOffFunctionality);
+		OWLNamedIndividual stateValue = createIndvidualByOWLClass(Entities.OnOffState.toString() + device.getName(), Entities.OnOffState);
+		OWLNamedIndividual offStateVal = createIndvidualByOWLClass(Entities.OffStateValue.toString() + device.getName(), Entities.OffStateValue);
 
-		return false;
+		result = addObjectPropertyToIndvidual(simpleLamp, onOffFunc, ObjectProperties.hasFunctionality);
+		result = addObjectPropertyToIndvidual(simpleLamp, stateValue, ObjectProperties.hasStateValue);
+		result = addObjectPropertyToIndvidual(simpleLamp, offStateVal, ObjectProperties.hasState);
+
+		result = addDataPropertyToIndividual(simpleLamp, DataProperties.nodeId, device.getDeviceId());
+
+		return result;
 	}
 
 	/**
