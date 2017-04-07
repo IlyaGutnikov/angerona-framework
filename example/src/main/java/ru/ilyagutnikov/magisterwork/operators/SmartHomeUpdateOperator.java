@@ -5,15 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.angerona.fw.Agent;
 import com.github.angerona.fw.am.secrecy.operators.parameter.GenerateOptionsParameter;
 import com.github.angerona.fw.comm.Inform;
+import com.github.angerona.fw.example.operators.SubgoalGenerationOperator;
 
 import net.sf.tweety.logics.commons.syntax.Constant;
 import net.sf.tweety.logics.fol.syntax.FOLAtom;
 import net.sf.tweety.logics.fol.syntax.FolFormula;
+import ru.ilyagutnikov.magisterwork.AdditionalData;
 import ru.ilyagutnikov.magisterwork.components.SmartHomeComponent;
 import ru.ilyagutnikov.magisterwork.secrecy.operators.BaseSmartHomeUpdateOperator;
 import ru.ilyagutnikov.magisterwork.serialize.SHDeviceConfig;
@@ -27,6 +32,8 @@ import scala.Option;
 import scala.collection.JavaConversions;
 
 public class SmartHomeUpdateOperator extends BaseSmartHomeUpdateOperator {
+
+	private static Logger LOG = LoggerFactory.getLogger(SmartHomeUpdateOperator.class);
 
 	private Agent agentWithOperator;
 
@@ -48,11 +55,15 @@ public class SmartHomeUpdateOperator extends BaseSmartHomeUpdateOperator {
 
 			if (percept.getSenderId().equals("RealWorld")) {
 
+				LOG.info(AdditionalData.DEBUG_MARKER, "Получен перцепт от реального мира");
+
 				reval = executeCommandRealWorld(getCommandFromPercept(firstPercept),
 						getDeviceFromPercept(firstPercept));
 			}
 
 			if (percept.getSenderId().equals("User")) {
+
+				LOG.info(AdditionalData.DEBUG_MARKER, "Получен перцепт от пользователя");
 
 				reval = executeCommandUser(getCommandFromPercept(firstPercept));
 			}
@@ -78,6 +89,8 @@ public class SmartHomeUpdateOperator extends BaseSmartHomeUpdateOperator {
 
 		if (command.equals("addDevice")) {
 
+			LOG.info(AdditionalData.DEBUG_MARKER, "Выполняется команда добавления устройства");
+
 			return SHComp.addDeviceToOWL(device);
 		}
 
@@ -95,26 +108,49 @@ public class SmartHomeUpdateOperator extends BaseSmartHomeUpdateOperator {
 		Iterable<Info> result = null;
 		ArrayList<JSONObject> jsonObjects = new ArrayList<JSONObject>();
 
+		LOG.info(AdditionalData.DEBUG_MARKER, "Выполняется распознование команды пользователя");
+
 		try {
 			result = JavaConversions.asJavaIterable(mystemAnalyzer.analyze(Request.apply(command)).info().toIterable());
 		} catch (MyStemApplicationException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 
 		if (result != null) {
 
 			for (final Info info : result) {
-				jsonObjects.add(new JSONObject(info.lex()));
+				jsonObjects.add(new JSONObject(info.rawResponse()));
 			}
 
-			return analyzeJSON(jsonObjects);
+			return analyzeCommandByJSON(jsonObjects);
 		}
 
 		return false;
 	}
 
-	private boolean analyzeJSON(ArrayList<JSONObject> objects) {
+	/**
+	 *
+	 * @param objects
+	 * @return
+	 * @author Ilya Gutnikov
+	 */
+	private boolean analyzeCommandByJSON(ArrayList<JSONObject> objects) {
+
+		SmartHomeComponent SHComp = agentWithOperator.getComponent(SmartHomeComponent.class);
+
+		ArrayList<String> lexems = new ArrayList<String>();
+		for (JSONObject jsonObject : objects) {
+
+			lexems.add(jsonObject.getJSONArray("analysis").getJSONObject(0).getString("lex"));
+		}
+
+		LOG.info(AdditionalData.DEBUG_MARKER, "Команда пользователя включает в себя лексемы: " + lexems.toString());
+
+		if (lexems.contains("выключать") && lexems.contains("свет")) {
+
+			return SHComp.executeCommandOnDevice("disableLight");
+		}
 
 		return false;
 	}

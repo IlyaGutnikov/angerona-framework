@@ -93,6 +93,16 @@ public class SmartHomeComponent extends BaseAgentComponent {
 		return false;
 	}
 
+	public boolean executeCommandOnDevice(String command) {
+
+		if (command.equals("disableLight")) {
+
+			//TODO disable light
+			return false;
+		}
+		return false;
+	}
+
 	/**
 	 * ============================================
 	 * High-level funcs
