@@ -97,8 +97,7 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 		if (command.equals("disableLight")) {
 
-			//TODO disable light
-			return false;
+			return disableLight();
 		}
 		return false;
 	}
@@ -116,13 +115,37 @@ public class SmartHomeComponent extends BaseAgentComponent {
 		OWLNamedIndividual simpleLamp = createIndvidualByOWLClass(device.getName(), Entities.SimpleLamp);
 		OWLNamedIndividual onOffFunc = createIndvidualByOWLClass(Entities.OnOffFunctionality.toString() + device.getName(), Entities.OnOffFunctionality);
 		OWLNamedIndividual stateValue = createIndvidualByOWLClass(Entities.OnOffState.toString() + device.getName(), Entities.OnOffState);
-		OWLNamedIndividual offStateVal = createIndvidualByOWLClass(Entities.OffStateValue.toString() + device.getName(), Entities.OffStateValue);
+		OWLNamedIndividual onStateVal = createIndvidualByOWLClass(Entities.OnStateValue.toString() + device.getName(), Entities.OffStateValue);
 
 		result = addObjectPropertyToIndvidual(simpleLamp, onOffFunc, ObjectProperties.hasFunctionality);
-		result = addObjectPropertyToIndvidual(simpleLamp, stateValue, ObjectProperties.hasStateValue);
-		result = addObjectPropertyToIndvidual(simpleLamp, offStateVal, ObjectProperties.hasState);
+		result = addObjectPropertyToIndvidual(simpleLamp, stateValue, ObjectProperties.hasState);
+		result = addObjectPropertyToIndvidual(simpleLamp, onStateVal, ObjectProperties.hasStateValue);
 
 		result = addDataPropertyToIndividual(simpleLamp, DataProperties.nodeId, device.getDeviceId());
+
+		return result;
+	}
+
+	/**
+	 * Выключает свет внутри OWL-симуляции
+	 * @return
+	 * @author Ilya Gutnikov
+	 */
+	private boolean disableLight() {
+
+		ArrayList<OWLNamedIndividual> lampIndividuals = getIndividualsByOWLClass(Entities.SimpleLamp);
+		boolean result = false;
+		for (OWLNamedIndividual owlNamedIndividual : lampIndividuals) {
+
+			deleteObjectPropertyAxiom(getObjectPropertyAxiomFromIndividual(owlNamedIndividual, ObjectProperties.hasStateValue));
+
+			OWLNamedIndividual offStateVal = createIndvidualByOWLClass(Entities.OffStateValue.toString() + owlNamedIndividual.getIRI().getShortForm(), Entities.OffStateValue);
+			result = addObjectPropertyToIndvidual(owlNamedIndividual, offStateVal, ObjectProperties.hasStateValue);
+
+			if (result == false) {
+				return false;
+			}
+		}
 
 		return result;
 	}
