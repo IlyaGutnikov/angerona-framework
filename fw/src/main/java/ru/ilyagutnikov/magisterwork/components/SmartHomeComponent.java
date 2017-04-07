@@ -112,7 +112,7 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 		boolean result = false;
 
-		OWLNamedIndividual simpleLamp = createIndvidualByOWLClass(device.getName(), Entities.SimpleLamp);
+		OWLNamedIndividual simpleLamp = createIndvidualByOWLClass(device.getName() + device.getDeviceId(), Entities.SimpleLamp);
 		OWLNamedIndividual onOffFunc = createIndvidualByOWLClass(Entities.OnOffFunctionality.toString() + device.getName(), Entities.OnOffFunctionality);
 		OWLNamedIndividual stateValue = createIndvidualByOWLClass(Entities.OnOffState.toString() + device.getName(), Entities.OnOffState);
 		OWLNamedIndividual onStateVal = createIndvidualByOWLClass(Entities.OnStateValue.toString() + device.getName(), Entities.OffStateValue);
@@ -135,6 +135,12 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 		ArrayList<OWLNamedIndividual> lampIndividuals = getIndividualsByOWLClass(Entities.SimpleLamp);
 		boolean result = false;
+
+		if (lampIndividuals == null) {
+
+			return false;
+		}
+
 		for (OWLNamedIndividual owlNamedIndividual : lampIndividuals) {
 
 			deleteObjectPropertyAxiom(getObjectPropertyAxiomFromIndividual(owlNamedIndividual, ObjectProperties.hasStateValue));
