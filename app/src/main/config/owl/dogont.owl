@@ -21830,6 +21830,7 @@ It mus be noticed that the functionality modeling uses existential quantifiers f
         <hasFunctionality rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OnOffFunctionalityLight"/>
         <hasState rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OffStateValueLight"/>
         <hasStateValue rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OnOffStateLight"/>
+        <nodeId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">582d579f6b</nodeId>
         <nodeId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cd38467844</nodeId>
     </owl:NamedIndividual>
     

@@ -87,6 +87,17 @@
     	<artifactId>owlapi-distribution</artifactId>
     	<version>5.0.5</version>
 	</dependency>
+	<dependency>
+	  <groupId>ru.stachek66.nlp</groupId>
+	  <artifactId>mystem-scala</artifactId>
+	  <version>0.1.4</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.json/json -->
+	<dependency>
+    	<groupId>org.json</groupId>
+    	<artifactId>json</artifactId>
+    	<version>20160212</version>
+	</dependency>
   </dependencies>
   <parent>
   	<groupId>com.github.angerona</groupId>
