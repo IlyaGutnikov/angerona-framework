@@ -319,7 +319,7 @@ public class SmartHomeComponent extends BaseAgentComponent {
 		OWLObjectProperty owlProp = factory.getOWLObjectProperty(property.toString(), DogOnt.pm);
 
 		for (OWLObjectPropertyAssertionAxiom obProperty : props) {
-			if (obProperty.getObjectPropertiesInSignature().contains(owlProp)) {
+			if (obProperty.toString().contains(owlProp.toString())) {
 
 				return obProperty;
 			}
