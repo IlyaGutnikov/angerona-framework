@@ -4,9 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -62,6 +66,7 @@ public class SHAgentsGUI {
 	protected JMenu smartHomeMenu = new JMenu("SmartHome");
 	protected JMenu realWorldMenu = new JMenu("RealWorld");
 
+
 	protected JMenu shDevicesMenu = new JMenu("Devices of real world");
 
 	public JMenu createSubMenu() {
@@ -77,20 +82,77 @@ public class SHAgentsGUI {
 
 			}
 		});
-		realWorldMenu.add(addDeviceFromRW);
-		realWorldMenu.addSeparator();
-		realWorldMenu.add(shDevicesMenu);
+		if (realWorldMenu.getMenuComponentCount() == 0) {
+
+			realWorldMenu.add(addDeviceFromRW);
+			realWorldMenu.addSeparator();
+			realWorldMenu.add(shDevicesMenu);
+		}
 
 		/// SmartHome
 
 		/// User
-		// TODO add text input
+		JMenuItem textInputMenu= new JMenuItem("User command");
+		textInputMenu.addActionListener(new ActionListener() {
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showTextInputDialog();
+
+			}
+		});
+
+		userMenu.add(textInputMenu);
+
+		/////////
 		SHAgentsMenu.add(realWorldMenu);
 		SHAgentsMenu.add(smartHomeMenu);
 		SHAgentsMenu.add(userMenu);
 
 		return SHAgentsMenu;
+	}
+
+	private void showTextInputDialog() {
+
+		JDialog dialog = new JDialog();
+		dialog.setSize(300, 300);
+
+		JTextField textField = new JTextField();
+		textField.setText("Выключить свет");
+
+		JButton buttonOk = new JButton("OK");
+		JButton buttonCancel = new JButton("Cancel");
+
+		buttonOk.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String usertext = textField.getText();
+				FOLAtom userCmdAtom = new FOLAtom(new Predicate(usertext, 0));
+
+				AngeronaEnvironment.getInstance().sendPerception("User", "SmartHome", userCmdAtom,
+						SpeechActType.SAT_INFORMATIVE);
+				dialog.dispose();
+
+			}
+		});
+
+		buttonCancel.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+
+			}
+		});
+
+		dialog.add(textField);
+		dialog.add(buttonCancel);
+		dialog.add(buttonOk);
+
+		dialog.pack();
+
+		dialog.setVisible(true);
 	}
 
 	/**
@@ -100,7 +162,7 @@ public class SHAgentsGUI {
 	 */
 	private void onLoadDeviceXML() {
 
-		FileFilter filter = new FileNameExtensionFilter("XML File","xml");
+		FileFilter filter = new FileNameExtensionFilter("XML File", "xml");
 
 		JFileChooser fileDialog = new JFileChooser();
 		fileDialog.setCurrentDirectory(new File("."));
@@ -121,13 +183,14 @@ public class SHAgentsGUI {
 
 			FOLAtom addDeviceAtom = new FOLAtom(new Predicate("addDevice", 1), new SHVariable(device));
 
-			AngeronaEnvironment.getInstance().sendPerception("RealWorld", "SmartHome",
-					addDeviceAtom, SpeechActType.SAT_INFORMATIVE);
+			AngeronaEnvironment.getInstance().sendPerception("RealWorld", "SmartHome", addDeviceAtom,
+					SpeechActType.SAT_INFORMATIVE);
 		}
 	}
 
 	/**
 	 * Добавляет устройство в список устройств реального мира
+	 *
 	 * @param device
 	 * @author Ilya Gutnikov
 	 */
