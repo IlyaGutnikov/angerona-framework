@@ -74,12 +74,13 @@ public class SmartHomeComponent extends BaseAgentComponent {
 			e.printStackTrace();
 		}
 
-
 	}
 
 	/**
 	 * Создание индвидуала девайса, на основе конфигурации
-	 * @param device конфигурация девайса
+	 *
+	 * @param device
+	 *            конфигурация девайса
 	 * @return true - если индивидуал был создан и false иначе
 	 * @author Ilya Gutnikov
 	 */
@@ -112,10 +113,16 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 		boolean result = false;
 
-		OWLNamedIndividual simpleLamp = createIndvidualByOWLClass(device.getName() + device.getDeviceId(), Entities.SimpleLamp);
-		OWLNamedIndividual onOffFunc = createIndvidualByOWLClass(Entities.OnOffFunctionality.toString() + device.getName(), Entities.OnOffFunctionality);
-		OWLNamedIndividual stateValue = createIndvidualByOWLClass(Entities.OnOffState.toString() + device.getName(), Entities.OnOffState);
-		OWLNamedIndividual onStateVal = createIndvidualByOWLClass(Entities.OnStateValue.toString() + device.getName(), Entities.OffStateValue);
+		String deviceNameAndId = device.getName() + "_" + device.getDeviceId();
+
+		OWLNamedIndividual simpleLamp = createIndvidualByOWLClass(deviceNameAndId,
+				Entities.SimpleLamp);
+		OWLNamedIndividual onOffFunc = createIndvidualByOWLClass(
+				Entities.OnOffFunctionality.toString() + deviceNameAndId, Entities.OnOffFunctionality);
+		OWLNamedIndividual stateValue = createIndvidualByOWLClass(Entities.OnOffState.toString() + deviceNameAndId,
+				Entities.OnOffState);
+		OWLNamedIndividual onStateVal = createIndvidualByOWLClass(Entities.OnStateValue.toString() + deviceNameAndId,
+				Entities.OffStateValue);
 
 		result = addObjectPropertyToIndvidual(simpleLamp, onOffFunc, ObjectProperties.hasFunctionality);
 		result = addObjectPropertyToIndvidual(simpleLamp, stateValue, ObjectProperties.hasState);
@@ -128,6 +135,7 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 	/**
 	 * Выключает свет внутри OWL-симуляции
+	 *
 	 * @return
 	 * @author Ilya Gutnikov
 	 */
@@ -143,9 +151,12 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 		for (OWLNamedIndividual owlNamedIndividual : lampIndividuals) {
 
-			deleteObjectPropertyAxiom(getObjectPropertyAxiomFromIndividual(owlNamedIndividual, ObjectProperties.hasStateValue));
+			deleteObjectPropertyAxiom(
+					getObjectPropertyAxiomFromIndividual(owlNamedIndividual, ObjectProperties.hasStateValue));
 
-			OWLNamedIndividual offStateVal = createIndvidualByOWLClass(Entities.OffStateValue.toString() + owlNamedIndividual.getIRI().getShortForm(), Entities.OffStateValue);
+			OWLNamedIndividual offStateVal = createIndvidualByOWLClass(
+					Entities.OffStateValue.toString() + owlNamedIndividual.getIRI().getShortForm(),
+					Entities.OffStateValue);
 			result = addObjectPropertyToIndvidual(owlNamedIndividual, offStateVal, ObjectProperties.hasStateValue);
 
 			if (result == false) {
@@ -164,8 +175,11 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 	/**
 	 * Создает индивидуал класса
-	 * @param individualName Имя индивидуала
-	 * @param entity Имя класса
+	 *
+	 * @param individualName
+	 *            Имя индивидуала
+	 * @param entity
+	 *            Имя класса
 	 * @return {@link OWLNamedIndividual} созданный индивидуал
 	 * @author Ilya Gutnikov
 	 */
@@ -193,22 +207,26 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 	/**
 	 * Удаляет индвидуал
-	 * @param indvidual Индивидуал, который необходимо удалить
+	 *
+	 * @param indvidual
+	 *            Индивидуал, который необходимо удалить
 	 * @author Ilya Gutnikov
 	 */
 	private void deleteIndividual(OWLNamedIndividual indvidual) {
 
-        OWLEntityRemover remover = new OWLEntityRemover(ontology);
+		OWLEntityRemover remover = new OWLEntityRemover(ontology);
 
-        indvidual.accept(remover);
-        manager.applyChanges(remover.getChanges());
+		indvidual.accept(remover);
+		manager.applyChanges(remover.getChanges());
 
-        remover.reset();
+		remover.reset();
 	}
 
 	/**
 	 * Получает список индивидуалов для выбранного класса
-	 * @param owlClass Выбранный класс
+	 *
+	 * @param owlClass
+	 *            Выбранный класс
 	 * @return Список индивидуалов
 	 * @author Ilya Gutnikov
 	 */
@@ -217,25 +235,27 @@ public class SmartHomeComponent extends BaseAgentComponent {
 		ArrayList<OWLNamedIndividual> output = new ArrayList<OWLNamedIndividual>();
 
 		OWLReasonerFactory reasonerFactory = new StructuralReasonerFactory();
-	    OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
-	    for (OWLClass c : ontology.getClassesInSignature()) {
+		OWLReasoner reasoner = reasonerFactory.createNonBufferingReasoner(ontology);
+		for (OWLClass c : ontology.getClassesInSignature()) {
 
-	        if (c.equals(owlClass)){
+			if (c.equals(owlClass)) {
 
-	            NodeSet<OWLNamedIndividual> instances = reasoner.getInstances(c, false);
-	            for (OWLNamedIndividual i : instances.getFlattened()) {
+				NodeSet<OWLNamedIndividual> instances = reasoner.getInstances(c, false);
+				for (OWLNamedIndividual i : instances.getFlattened()) {
 
-	            	output.add(i);
-	            }
-	        }
-	    }
+					output.add(i);
+				}
+			}
+		}
 
 		return output;
 	}
 
 	/**
 	 * Получает список индивидуалов для выбранного класса
-	 * @param entity Сущность класса
+	 *
+	 * @param entity
+	 *            Сущность класса
 	 * @return Список индивидуалов
 	 * @author Ilya Gutnikov
 	 */
@@ -249,8 +269,11 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 	/**
 	 * Получает индвидуала по его имени и классу
-	 * @param individualName Имя индивидуала
-	 * @param entity Сущность
+	 *
+	 * @param individualName
+	 *            Имя индивидуала
+	 * @param entity
+	 *            Сущность
 	 * @return {@link OWLNamedIndividual} индивидуал
 	 * @author Ilya Gutnikov
 	 */
@@ -269,18 +292,24 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 	/**
 	 * Добавляет свойства объекта для индивидуала
-	 * @param individual Индивидуал
-	 * @param propertyIndividual Индивидула-свойство
-	 * @param property Сущность свойства
+	 *
+	 * @param individual
+	 *            Индивидуал
+	 * @param propertyIndividual
+	 *            Индивидула-свойство
+	 * @param property
+	 *            Сущность свойства
 	 * @return true - если операция прошла успешно и false иначе
 	 * @author Ilya Gutnikov
 	 */
-	private boolean addObjectPropertyToIndvidual(OWLNamedIndividual individual, OWLNamedIndividual propertyIndividual, ObjectProperties property) {
+	private boolean addObjectPropertyToIndvidual(OWLNamedIndividual individual, OWLNamedIndividual propertyIndividual,
+			ObjectProperties property) {
 
 		OWLDataFactory factory = manager.getOWLDataFactory();
 		OWLObjectProperty owlProp = factory.getOWLObjectProperty(property.toString(), DogOnt.pm);
 
-		OWLObjectPropertyAssertionAxiom propertyAxiom = factory.getOWLObjectPropertyAssertionAxiom(owlProp, individual, propertyIndividual);
+		OWLObjectPropertyAssertionAxiom propertyAxiom = factory.getOWLObjectPropertyAssertionAxiom(owlProp, individual,
+				propertyIndividual);
 
 		manager.addAxiom(ontology, propertyAxiom);
 
@@ -297,11 +326,14 @@ public class SmartHomeComponent extends BaseAgentComponent {
 
 	/**
 	 * Получает аксиомы объектов для выбранного индивидуала
-	 * @param individual Индивидуал
+	 *
+	 * @param individual
+	 *            Индивидуал
 	 * @return Список аксиом
 	 * @author Ilya Gutnikov
 	 */
-	private ArrayList<OWLObjectPropertyAssertionAxiom> getObjectPropertiesAxiomsFromIndividual(OWLNamedIndividual individual) {
+	private ArrayList<OWLObjectPropertyAssertionAxiom> getObjectPropertiesAxiomsFromIndividual(
+			OWLNamedIndividual individual) {
 
 		ArrayList<OWLObjectPropertyAssertionAxiom> props = new ArrayList<OWLObjectPropertyAssertionAxiom>();
 		Set<OWLObjectPropertyAssertionAxiom> properties = ontology.getObjectPropertyAssertionAxioms(individual);
@@ -317,7 +349,8 @@ public class SmartHomeComponent extends BaseAgentComponent {
 	 * @return
 	 * @author Ilya Gutnikov
 	 */
-	private OWLObjectPropertyAssertionAxiom getObjectPropertyAxiomFromIndividual(OWLNamedIndividual individual, ObjectProperties property) {
+	private OWLObjectPropertyAssertionAxiom getObjectPropertyAxiomFromIndividual(OWLNamedIndividual individual,
+			ObjectProperties property) {
 
 		ArrayList<OWLObjectPropertyAssertionAxiom> props = getObjectPropertiesAxiomsFromIndividual(individual);
 
@@ -341,32 +374,40 @@ public class SmartHomeComponent extends BaseAgentComponent {
 	 */
 	private void deleteObjectPropertyAxiom(OWLObjectPropertyAssertionAxiom axiom) {
 
-		ontology.removeAxiom(axiom);
+		if (axiom != null) {
+			ontology.removeAxiom(axiom);
 
-		try {
-			manager.saveOntology(ontology);
-			System.out.println("Онтология была успешно сохранена");
-		} catch (OWLOntologyStorageException e) {
-			e.printStackTrace();
-			System.out.println("Ошибка при сохранении онтологии " + e);
+			try {
+				manager.saveOntology(ontology);
+				System.out.println("Онтология была успешно сохранена");
+			} catch (OWLOntologyStorageException e) {
+				e.printStackTrace();
+				System.out.println("Ошибка при сохранении онтологии " + e);
+			}
 		}
 
 	}
 
 	/**
 	 * Добавляет свойство данных для индивидула
-	 * @param individual Индивидуал
-	 * @param property свойство
-	 * @param propertyValue Значение свойства
+	 *
+	 * @param individual
+	 *            Индивидуал
+	 * @param property
+	 *            свойство
+	 * @param propertyValue
+	 *            Значение свойства
 	 * @return true - если операция прошла успешно и false иначе
 	 * @author Ilya Gutnikov
 	 */
-	private boolean addDataPropertyToIndividual(OWLNamedIndividual individual, DataProperties property, String propertyValue) {
+	private boolean addDataPropertyToIndividual(OWLNamedIndividual individual, DataProperties property,
+			String propertyValue) {
 
 		OWLDataFactory factory = manager.getOWLDataFactory();
 		OWLDataProperty owlProperty = factory.getOWLDataProperty(property.toString(), DogOnt.pm);
 
-		OWLDataPropertyAssertionAxiom propertyAxiom = factory.getOWLDataPropertyAssertionAxiom(owlProperty, individual, propertyValue);
+		OWLDataPropertyAssertionAxiom propertyAxiom = factory.getOWLDataPropertyAssertionAxiom(owlProperty, individual,
+				propertyValue);
 
 		manager.addAxiom(ontology, propertyAxiom);
 

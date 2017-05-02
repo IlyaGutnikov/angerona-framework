@@ -21831,10 +21831,22 @@ It mus be noticed that the functionality modeling uses existential quantifiers f
         <hasState rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OffStateValueLight"/>
         <hasState rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OnOffStateLight"/>
         <hasStateValue rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OffStateValueLight"/>
-        <hasStateValue rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OnStateValueLight"/>
         <nodeId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">19d792ee47</nodeId>
         <nodeId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">582d579f6b</nodeId>
         <nodeId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cd38467844</nodeId>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://elite.polito.it/ontologies/dogont.owl#Light15518a2fe4 -->
+
+
+    <owl:NamedIndividual rdf:about="http://elite.polito.it/ontologies/dogont.owl#Light15518a2fe4">
+        <rdf:type rdf:resource="http://elite.polito.it/ontologies/dogont.owl#SimpleLamp"/>
+        <hasFunctionality rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OnOffFunctionalityLight"/>
+        <hasState rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OnOffStateLight"/>
+        <hasStateValue rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OffStateValueLight15518a2fe4"/>
+        <nodeId rdf:datatype="http://www.w3.org/2001/XMLSchema#string">15518a2fe4</nodeId>
     </owl:NamedIndividual>
     
 
@@ -21843,6 +21855,15 @@ It mus be noticed that the functionality modeling uses existential quantifiers f
 
 
     <owl:NamedIndividual rdf:about="http://elite.polito.it/ontologies/dogont.owl#OffStateValueLight">
+        <rdf:type rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OffStateValue"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://elite.polito.it/ontologies/dogont.owl#OffStateValueLight15518a2fe4 -->
+
+
+    <owl:NamedIndividual rdf:about="http://elite.polito.it/ontologies/dogont.owl#OffStateValueLight15518a2fe4">
         <rdf:type rdf:resource="http://elite.polito.it/ontologies/dogont.owl#OffStateValue"/>
     </owl:NamedIndividual>
     
